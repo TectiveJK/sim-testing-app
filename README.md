@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SIM Flight Testing
 
 A local Ubuntu-first lab for **flight testing and regression testing** against the company SIM environment. After a SkyCommand / SIM, drone firmware, or related software update, create a new test run from the existing catalog, score each transition, and keep a versioned history of what passed or failed.
@@ -43,3 +44,6 @@ npm start
 ## Adding tests later
 
 Use **Test catalog → Add test**, or append a row to `lib/catalog.ts` and (optionally) a scenario in `lib/missions.ts`. New catalog entries are automatically attached to existing runs as **Not Tested**.
+=======
+# sim-testing-app
+>>>>>>> c4e2f8335ea28cdcb85598e7b51aa7c17e0a2575
