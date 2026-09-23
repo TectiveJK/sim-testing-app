@@ -34,7 +34,7 @@ Comment=Flight testing and regression testing for SkyCommand / SIM and drone sof
 Exec=$(escape "$STARTER")
 Icon=$ICON
 Terminal=false
-Categories=Utility;Development;
+Categories=Utility;
 StartupNotify=true
 Keywords=drone;SIM;SkyCommand;regression;flight;
 EOF
