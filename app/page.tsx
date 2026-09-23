@@ -1,8 +1,9 @@
 "use client";
 
-import { AlertTriangle, ArrowRight, CheckCircle2, Plus } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, FileDown, Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
+import { DownloadLink } from "@/components/download-link";
 import { LinkButton } from "@/components/link-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
@@ -89,10 +90,18 @@ export default function DashboardPage() {
               </CardDescription>
             </div>
             {latest ? (
-              <LinkButton href={`/runs/${latest.id}`} variant="outline" size="sm">
-                Continue
-                <ArrowRight />
-              </LinkButton>
+              <div className="flex flex-wrap gap-2">
+                {latestCounts && latestCounts.total - latestCounts.not_tested > 0 ? (
+                  <DownloadLink href={`/api/runs/${latest.id}/pdf`} size="sm" testId="export-pdf-latest">
+                    <FileDown />
+                    Export PDF
+                  </DownloadLink>
+                ) : null}
+                <LinkButton href={`/runs/${latest.id}`} variant="outline" size="sm">
+                  Continue
+                  <ArrowRight />
+                </LinkButton>
+              </div>
             ) : null}
           </CardHeader>
           <CardContent>

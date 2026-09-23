@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { FileDown, Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
+import { DownloadLink } from "@/components/download-link";
 import { LinkButton } from "@/components/link-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
@@ -44,21 +45,21 @@ export default function RunsPage() {
           {store.runs.map((run) => {
             const counts = countResults(store, run.id);
             const rate = passRate(counts);
+            const recorded = counts.total - counts.not_tested;
             return (
-              <Link
+              <div
                 key={run.id}
-                href={`/runs/${run.id}`}
-                className="block rounded-xl border bg-card px-4 py-4 transition-colors hover:bg-muted/40"
+                className="rounded-xl border bg-card px-4 py-4 transition-colors hover:bg-muted/40"
               >
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                  <div>
+                  <Link href={`/runs/${run.id}`} className="min-w-0 flex-1">
                     <div className="text-sm font-semibold">{run.name}</div>
                     <div className="mt-1 text-sm text-muted-foreground">
                       SkyCommand {run.skyCommandVersion || "—"} · Drone {run.droneVersion || "—"} ·{" "}
                       {formatDateTime(run.startedAt)}
                       {run.tester ? ` · ${run.tester}` : ""}
                     </div>
-                  </div>
+                  </Link>
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="text-muted-foreground">
                       {rate === null ? "No scored tests" : `${rate}% pass`}
@@ -69,9 +70,19 @@ export default function RunsPage() {
                     <span>{counts.failed}</span>
                     <StatusBadge status="not_tested" short />
                     <span>{counts.not_tested}</span>
+                    {recorded > 0 ? (
+                      <DownloadLink
+                        href={`/api/runs/${run.id}/pdf`}
+                        size="sm"
+                        testId={`export-pdf-${run.id}`}
+                      >
+                        <FileDown />
+                        Export PDF
+                      </DownloadLink>
+                    ) : null}
                   </div>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

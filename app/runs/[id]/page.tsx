@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, use, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Download, Flag } from "lucide-react";
+import { Download, FileDown, Flag } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { DownloadLink } from "@/components/download-link";
 import { LinkButton } from "@/components/link-button";
 import { NativeSelect } from "@/components/native-select";
 import { ResultPanel } from "@/components/result-panel";
@@ -140,6 +141,12 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
         description={`${formatDateTime(run.startedAt)} · SkyCommand ${run.skyCommandVersion || "—"} · Drone ${run.droneVersion || "—"} · ${run.tester || "No tester"}`}
         actions={
           <>
+            {recorded > 0 ? (
+              <DownloadLink href={`/api/runs/${run.id}/pdf`} testId="export-pdf">
+                <FileDown />
+                Export PDF
+              </DownloadLink>
+            ) : null}
             <Button variant="outline" onClick={exportCsv}>
               <Download />
               CSV
@@ -175,6 +182,11 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
         <Summary label="Failed" value={String(counts.failed)} />
         <Summary label="Blocked / N/A" value={`${counts.blocked} / ${counts.not_applicable}`} />
       </div>
+      {recorded === 0 ? (
+        <p className="mb-6 text-sm text-muted-foreground">
+          Score at least one test to enable Export PDF and share a partial or complete report.
+        </p>
+      ) : null}
 
       <ViewTabs
         value={view}

@@ -56,6 +56,18 @@ try {
   await page.getByRole("button", { name: "Passed", exact: true }).click();
   await page.waitForTimeout(300);
 
+  await page.waitForSelector('[data-testid="export-pdf"]');
+  const pdfHref = await page.getByTestId("export-pdf").getAttribute("href");
+  assert(pdfHref, "Export PDF link has no href");
+  const pdfResponse = await page.request.get(new URL(pdfHref, base).toString());
+  assert(pdfResponse.ok(), `PDF download failed (${pdfResponse.status()})`);
+  assert(
+    (pdfResponse.headers()["content-type"] || "").includes("pdf"),
+    `Expected application/pdf, got ${pdfResponse.headers()["content-type"]}`,
+  );
+  const pdfBody = await pdfResponse.body();
+  assert(pdfBody.subarray(0, 4).toString() === "%PDF", "Export did not return a PDF");
+
   await page.getByTestId("tab-matrix").click();
   await page.waitForURL(/view=matrix/);
   await page.waitForSelector("table");
