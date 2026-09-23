@@ -41,6 +41,8 @@ After some or all tests in a run have been scored, the tester can use **Export P
 
 A test run that was started by mistake, or that the tester did not actually fly, can be removed with **Delete** on the Test runs page. The button sits next to Export PDF. Confirming delete removes that run and all of its results.
 
+The app itself can be shared with other testers. The public link is **https://github.com/TectiveJK/sim-testing-app**. Copy it from the dashboard **Share this app** card, from **Share app** / **Copy link** in the sidebar, or from the top of this README. Other testers clone the repository and run the lab on their own Ubuntu machine. Results stay local to each machine.
+
 It also stores the last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
 
 - autonomy-node_1.0.0+12a9d76-b2_amd64.deb
@@ -109,6 +111,7 @@ npm start
 5. Use **Export PDF** on the run (or the runs list) to share a partial or complete report.
 6. Use **Delete** next to Export PDF to remove a run you did not need or started by mistake.
 7. Compare the new run with the previous run to find regressions.
+8. Send **https://github.com/TectiveJK/sim-testing-app** to other testers so they can install the same app.
 
 ## Test runs
 
