@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ViewPanel, ViewTabs } from "@/components/simple-tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
@@ -29,6 +29,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
   const [command, setCommand] = useState("all");
   const [status, setStatus] = useState<"all" | TestStatus>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [view, setView] = useState("execute");
 
   const results = useMemo(
     () => store.results.filter((result) => result.testRunId === id),
@@ -163,14 +164,17 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
         <Summary label="Blocked / N/A" value={`${counts.blocked} / ${counts.not_applicable}`} />
       </div>
 
-      <Tabs defaultValue="execute">
-        <TabsList>
-          <TabsTrigger value="execute">Execute</TabsTrigger>
-          <TabsTrigger value="matrix">Matrix</TabsTrigger>
-          <TabsTrigger value="setup">Setup</TabsTrigger>
-        </TabsList>
+      <ViewTabs
+        value={view}
+        onChange={setView}
+        items={[
+          { value: "execute", label: "Execute" },
+          { value: "matrix", label: "Matrix" },
+          { value: "setup", label: "Setup" },
+        ]}
+      />
 
-        <TabsContent value="execute" className="mt-4">
+      <ViewPanel when="execute" active={view}>
           <div className="mb-3 grid gap-2 md:grid-cols-4">
             <Input
               value={query}
@@ -222,8 +226,8 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
                         key={test.id}
                         type="button"
                         onClick={() => setSelectedId(test.id)}
-                        className={`flex w-full items-start justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-muted ${
-                          selected?.id === test.id ? "bg-muted" : ""
+                        className={`flex w-full items-start justify-between gap-2 rounded-lg border px-3 py-2 text-left text-sm hover:bg-muted ${
+                          selected?.id === test.id ? "border-primary bg-muted" : "border-transparent"
                         }`}
                       >
                         <span>
@@ -241,6 +245,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
               <CardContent className="pt-6">
                 {selected && selectedResult ? (
                   <ResultPanel
+                    key={selected.id}
                     test={selected}
                     result={selectedResult}
                     runId={run.id}
@@ -252,9 +257,9 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+      </ViewPanel>
 
-        <TabsContent value="matrix" className="mt-4">
+      <ViewPanel when="matrix" active={view}>
           <TestMatrix
             tests={catalog.tests}
             commands={catalog.commands}
@@ -262,11 +267,14 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
             phasesByState={catalog.phasesByState}
             resultsByTestId={byTestId}
             selectedId={selected?.id}
-            onSelect={(test) => setSelectedId(test.id)}
+            onSelect={(test) => {
+              setSelectedId(test.id);
+              setView("execute");
+            }}
           />
-        </TabsContent>
+      </ViewPanel>
 
-        <TabsContent value="setup" className="mt-4">
+      <ViewPanel when="setup" active={view}>
           <Card>
             <CardHeader>
               <CardTitle>Run setup</CardTitle>
@@ -311,8 +319,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+      </ViewPanel>
     </div>
   );
 }

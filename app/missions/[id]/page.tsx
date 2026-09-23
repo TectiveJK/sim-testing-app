@@ -109,7 +109,13 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
               {test && result && run ? (
                 <>
                   <p className="mb-4 text-sm text-muted-foreground">{step.instruction}</p>
-                  <ResultPanel test={test} result={result} runId={run.id} tester={run.tester} />
+                  <ResultPanel
+                    key={test.id}
+                    test={test}
+                    result={result}
+                    runId={run.id}
+                    tester={run.tester}
+                  />
                   <div className="mt-6 flex justify-between">
                     <Button
                       variant="outline"

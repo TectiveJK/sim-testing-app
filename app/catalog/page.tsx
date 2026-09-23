@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ViewPanel, ViewTabs } from "@/components/simple-tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { COMMANDS } from "@/lib/types";
@@ -22,6 +22,7 @@ export default function CatalogPage() {
   const [command, setCommand] = useState("all");
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [view, setView] = useState("matrix");
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -74,26 +75,32 @@ export default function CatalogPage() {
         </NativeSelect>
       </div>
 
-      <Tabs defaultValue="matrix">
-        <TabsList>
-          <TabsTrigger value="matrix">Transition matrix</TabsTrigger>
-          <TabsTrigger value="list">List</TabsTrigger>
-        </TabsList>
-        <TabsContent value="matrix" className="mt-4">
+      <ViewTabs
+        value={view}
+        onChange={setView}
+        items={[
+          { value: "matrix", label: "Transition matrix" },
+          { value: "list", label: "List" },
+        ]}
+      />
+      <ViewPanel when="matrix" active={view}>
           <TestMatrix
             tests={filtered}
             commands={catalog.commands}
             states={catalog.states.filter((item) => state === "all" || item === state)}
             phasesByState={catalog.phasesByState}
             selectedId={selected?.id}
-            onSelect={(test) => setSelectedId(test.id)}
+            onSelect={(test) => {
+              setSelectedId(test.id);
+              setView("list");
+            }}
           />
           <p className="mt-2 text-xs text-muted-foreground">
             Showing {filtered.length} of {catalog.tests.length} tests. Cells marked — exist in the
             catalog and are ready to score in a test run.
           </p>
-        </TabsContent>
-        <TabsContent value="list" className="mt-4">
+      </ViewPanel>
+      <ViewPanel when="list" active={view}>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <Card>
               <CardHeader>
@@ -108,8 +115,8 @@ export default function CatalogPage() {
                       key={test.id}
                       type="button"
                       onClick={() => setSelectedId(test.id)}
-                      className={`block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-muted ${
-                        selected?.id === test.id ? "bg-muted" : ""
+                      className={`block w-full rounded-lg border px-3 py-2 text-left text-sm hover:bg-muted ${
+                        selected?.id === test.id ? "border-primary bg-muted" : "border-transparent"
                       }`}
                     >
                       <div className="font-medium">{test.name}</div>
@@ -153,8 +160,7 @@ export default function CatalogPage() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-      </Tabs>
+      </ViewPanel>
 
       <AddTestDialog open={open} onOpenChange={setOpen} onSubmit={addTest} />
     </div>

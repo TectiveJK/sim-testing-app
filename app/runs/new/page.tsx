@@ -5,7 +5,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/page-header";
 import { ArtifactEditor } from "@/components/artifact-editor";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,14 @@ export default function NewRunPage() {
         className="space-y-6"
         onSubmit={async (event) => {
           event.preventDefault();
+          if (!skyCommandVersion.trim() || !droneVersion.trim()) {
+            toast.error("Enter both the SkyCommand / SIM version and the drone software version.");
+            return;
+          }
+          if (!tester.trim()) {
+            toast.error("Enter the tester name.");
+            return;
+          }
           setSaving(true);
           try {
             await saveArtifacts(artifacts);
@@ -75,7 +84,7 @@ export default function NewRunPage() {
               <Label htmlFor="sim-version">SkyCommand / SIM version</Label>
               <Input
                 id="sim-version"
-                required
+                name="skyCommandVersion"
                 value={skyCommandVersion}
                 onChange={(event) => setSkyCommandVersion(event.target.value)}
                 placeholder="1.3.0"
@@ -85,7 +94,7 @@ export default function NewRunPage() {
               <Label htmlFor="drone-version">Drone software / firmware</Label>
               <Input
                 id="drone-version"
-                required
+                name="droneVersion"
                 value={droneVersion}
                 onChange={(event) => setDroneVersion(event.target.value)}
                 placeholder="3.4.2"
@@ -95,7 +104,9 @@ export default function NewRunPage() {
               <Label htmlFor="tester">Tester</Label>
               <Input
                 id="tester"
+                name="tester"
                 list="testers"
+                autoComplete="name"
                 value={tester}
                 onChange={(event) => setTester(event.target.value)}
                 placeholder="Your name"
@@ -158,9 +169,9 @@ export default function NewRunPage() {
           <Button type="button" variant="outline" onClick={() => router.push("/runs")}>
             Cancel
           </Button>
-          <Button type="submit" disabled={saving}>
+          <button type="submit" disabled={saving} className={cn(buttonVariants())}>
             {saving ? "Creating…" : "Start test run"}
-          </Button>
+          </button>
         </div>
       </form>
     </div>
