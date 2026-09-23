@@ -2,11 +2,13 @@
 
 ## Share this app
 
-Send this link to other testers:
+Send this GitHub link to other testers. This is the link that works for other people:
 
 **https://github.com/TectiveJK/sim-testing-app**
 
-The repository is public. Anyone with the link can open it, clone it, and run the lab on their own Ubuntu machine:
+Do **not** send `http://127.0.0.1:43147`. That address is only the lab on *this* computer, after the app has been started. It will fail in another browser, on another laptop, or if the server is not running.
+
+The repository is public. Anyone with the GitHub link can clone it and run the lab on their own Ubuntu machine:
 
 ```bash
 git clone https://github.com/TectiveJK/sim-testing-app.git
@@ -15,7 +17,7 @@ npm install
 npm run dev
 ```
 
-Then open [http://127.0.0.1:43147](http://127.0.0.1:43147). Each tester keeps their own results locally. Use **Export PDF** to share a test-run report.
+After `npm run dev` finishes, open **http://127.0.0.1:43147** on that same computer. Or run `npm run desktop-icon` and double-click **SIM Flight Testing**. Each tester keeps their own results locally. Use **Export PDF** to share a test-run report.
 
 ## Description
 
@@ -93,7 +95,7 @@ npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:43147](http://127.0.0.1:43147).
+When the server is running on this machine, open http://127.0.0.1:43147 in a browser on the same computer.
 
 Results are saved in `data/store.json`. Uploaded files go to `data/attachments/`.
 

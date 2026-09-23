@@ -87,8 +87,8 @@ export function ShareAppLink({
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Send this GitHub link to other testers. They clone it and run the lab on their own Ubuntu
-        machine.
+        Send this GitHub link, not http://127.0.0.1:43147. That local address only works on the
+        computer where the app is already running.
       </p>
     </div>
   );

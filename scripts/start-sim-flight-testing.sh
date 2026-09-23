@@ -25,7 +25,7 @@ load_node() {
 }
 
 server_up() {
-  curl -sf -o /dev/null "$URL"
+  curl -sf -o /dev/null "$URL" || curl -sf -o /dev/null "http://localhost:${PORT}"
 }
 
 open_app() {
