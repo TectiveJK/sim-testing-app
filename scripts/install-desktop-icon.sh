@@ -3,8 +3,12 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 STARTER="$ROOT/scripts/start-sim-flight-testing.sh"
-ICON="$ROOT/packaging/sim-flight-testing.svg"
+ICON="$ROOT/packaging/sim-flight-testing.png"
+if [[ ! -f "$ICON" ]]; then
+  ICON="$ROOT/packaging/sim-flight-testing.svg"
+fi
 APP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+ICON_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/icons/hicolor/256x256/apps"
 DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
 FILE_NAME="sim-flight-testing.desktop"
 
@@ -41,7 +45,8 @@ EOF
   chmod +x "$target"
 }
 
-mkdir -p "$APP_DIR" "$DESKTOP_DIR"
+mkdir -p "$APP_DIR" "$DESKTOP_DIR" "$ICON_DIR"
+cp -f "$ICON" "$ICON_DIR/sim-flight-testing.png" 2>/dev/null || cp -f "$ICON" "$ICON_DIR/sim-flight-testing.svg"
 
 APP_FILE="$APP_DIR/$FILE_NAME"
 DESKTOP_FILE="$DESKTOP_DIR/$FILE_NAME"
@@ -51,6 +56,7 @@ write_entry "$DESKTOP_FILE"
 
 if command -v gio >/dev/null 2>&1; then
   gio set "$DESKTOP_FILE" metadata::trusted true 2>/dev/null || true
+  gio set "$DESKTOP_FILE" "metadata::trusted" true 2>/dev/null || true
 fi
 
 if command -v update-desktop-database >/dev/null 2>&1; then
