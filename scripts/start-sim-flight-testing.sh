@@ -55,12 +55,12 @@ fi
 nohup npm run dev >>"$LOG" 2>&1 &
 echo $! >"$PID_FILE"
 
-for _ in $(seq 1 80); do
+for _ in $(seq 1 120); do
   if server_up; then
     open_app
     exit 0
   fi
-  sleep 0.25
+  sleep 0.5
 done
 
 zenity --error --text="The SIM Flight Testing server did not start. See $LOG" 2>/dev/null \
