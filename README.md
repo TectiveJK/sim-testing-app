@@ -6,7 +6,7 @@ Send this GitHub link to other testers. This is the link that works for other pe
 
 **https://github.com/TectiveJK/sim-testing-app**
 
-Do **not** send `http://127.0.0.1:43147`. That address is only the lab on *this* computer, after the app has been started. It will fail in another browser, on another laptop, or if the server is not running.
+Do **not** send `http://127.0.0.1:43147`. That address is only the lab on *this* computer. It will fail in another browser or on another laptop.
 
 The repository is public. Anyone with the GitHub link can install it once on their Ubuntu machine. After that the lab starts by itself at login, and **http://127.0.0.1:43147** works without typing a command:
 
@@ -43,7 +43,7 @@ After some or all tests in a run have been scored, the tester can use **Export P
 
 A test run that was started by mistake, or that the tester did not actually fly, can be removed with **Delete** on the Test runs page. The button sits next to Export PDF. Confirming delete removes that run and all of its results.
 
-The app itself can be shared with other testers. The public link is **https://github.com/TectiveJK/sim-testing-app**. Copy it from the dashboard **Share this app** card, from **Share app** / **Copy link** in the sidebar, or from the top of this README. Other testers clone the repository and run `npm run setup` once. After that the lab starts when they log in, and they open http://127.0.0.1:43147 without typing a command. Results stay local to each machine.
+The app itself can be shared with other testers. The public link is **https://github.com/TectiveJK/sim-testing-app**. Copy it from the dashboard **Share this app** card, from **Share app** / **Copy link** in the sidebar, or from the top of this README. Other testers clone the repository and run `npm run setup` once. That installs the desktop icon, starts the server, and enables start-at-login. After that they do not run `npm run dev` or any other command. They open http://127.0.0.1:43147 or double-click **SIM Flight Testing**. Results stay local to each machine.
 
 It also stores the last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
 
@@ -103,7 +103,7 @@ npm run setup
 5. Use **Export PDF** on the run (or the runs list) to share a partial or complete report.
 6. Use **Delete** next to Export PDF to remove a run you did not need or started by mistake.
 7. Compare the new run with the previous run to find regressions.
-8. Send **https://github.com/TectiveJK/sim-testing-app** to other testers so they can install the same app.
+8. Send **https://github.com/TectiveJK/sim-testing-app** to other testers so they can run `npm run setup` once and then use the app without further commands.
 
 ## Test runs
 
