@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DEFAULT_ARTIFACTS } from "@/lib/default-artifacts";
 import { mergeCatalog } from "@/lib/catalog";
@@ -105,6 +105,26 @@ export function rememberTester(store: AppStore, tester: string) {
   const name = tester.trim();
   if (!name) return;
   store.testers = [name, ...store.testers.filter((item) => item !== name)].slice(0, 20);
+}
+
+export function removeRun(store: AppStore, runId: string) {
+  const results = store.results.filter((result) => result.testRunId === runId);
+  const attachmentIds = results.flatMap((result) => result.attachments.map((item) => item.id));
+  store.runs = store.runs.filter((run) => run.id !== runId);
+  store.results = store.results.filter((result) => result.testRunId !== runId);
+  return attachmentIds;
+}
+
+export async function deleteAttachmentFiles(ids: string[]) {
+  await Promise.all(
+    ids.map(async (id) => {
+      try {
+        await unlink(attachmentPath(id));
+      } catch {
+        // File may already be gone.
+      }
+    }),
+  );
 }
 
 export async function saveAttachmentFile(id: string, bytes: Uint8Array) {

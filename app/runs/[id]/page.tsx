@@ -6,6 +6,7 @@ import { Suspense, use, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Download, FileDown, Flag } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { DeleteRunButton } from "@/components/delete-run-button";
 import { DownloadLink } from "@/components/download-link";
 import { LinkButton } from "@/components/link-button";
 import { NativeSelect } from "@/components/native-select";
@@ -147,6 +148,7 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
                 Export PDF
               </DownloadLink>
             ) : null}
+            <DeleteRunButton runId={run.id} runName={run.name} size="default" testId="delete-run" />
             <Button variant="outline" onClick={exportCsv}>
               <Download />
               CSV

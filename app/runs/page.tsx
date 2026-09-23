@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FileDown, Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
+import { DeleteRunButton } from "@/components/delete-run-button";
 import { DownloadLink } from "@/components/download-link";
 import { LinkButton } from "@/components/link-button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -80,6 +81,11 @@ export default function RunsPage() {
                         Export PDF
                       </DownloadLink>
                     ) : null}
+                    <DeleteRunButton
+                      runId={run.id}
+                      runName={run.name}
+                      testId={`delete-run-${run.id}`}
+                    />
                   </div>
                 </div>
               </div>

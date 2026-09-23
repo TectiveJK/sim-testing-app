@@ -41,6 +41,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Test runs that snapshot software versions and `.deb` artifacts
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
+- Delete a test run from the Test runs page when it was started by mistake
 - Local storage on the tester’s Ubuntu machine
 
 ## Desktop icon (Ubuntu)
@@ -86,7 +87,8 @@ npm start
 3. Enter the SkyCommand / SIM version, drone version, tester, and notes.
 4. Score each function or walk a mission, adding notes and attachments where needed.
 5. Use **Export PDF** on the run (or the runs list) to share a partial or complete report.
-6. Compare the new run with the previous run to find regressions.
+6. Use **Delete** next to Export PDF to remove a run you did not need or started by mistake.
+7. Compare the new run with the previous run to find regressions.
 
 ## Adding tests later
 

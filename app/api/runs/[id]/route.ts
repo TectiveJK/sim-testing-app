@@ -1,4 +1,4 @@
-import { rememberTester, updateStore } from "@/lib/store";
+import { deleteAttachmentFiles, rememberTester, removeRun, updateStore } from "@/lib/store";
 
 export async function PATCH(
   request: Request,
@@ -41,4 +41,26 @@ export async function PATCH(
     const status = message === "Run not found" ? 404 : 500;
     return Response.json({ error: message }, { status });
   }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  let found = false;
+  let attachmentIds: string[] = [];
+
+  await updateStore((current) => {
+    found = current.runs.some((run) => run.id === id);
+    if (!found) return;
+    attachmentIds = removeRun(current, id);
+  });
+
+  if (!found) {
+    return Response.json({ error: "Run not found" }, { status: 404 });
+  }
+
+  await deleteAttachmentFiles(attachmentIds);
+  return Response.json({ ok: true });
 }

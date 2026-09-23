@@ -73,6 +73,17 @@ try {
   await page.waitForSelector("table");
   const tables = await page.locator("table").count();
   assert(tables > 0, "Matrix tab did not show a table");
+
+  const runUrl = page.url();
+  const runId = runUrl.match(/\/runs\/([0-9a-f-]+)/)?.[1];
+  assert(runId, "Could not read created run id");
+  await page.goto(`${base}/runs`, { waitUntil: "networkidle" });
+  await page.waitForSelector(`[data-testid="delete-run-${runId}"]`);
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByTestId(`delete-run-${runId}`).click();
+  await page.waitForURL(/\/runs(?:\?|$)/, { timeout: 15000 });
+  const leftover = await page.getByTestId(`delete-run-${runId}`).count();
+  assert(leftover === 0, "Deleted run is still listed");
 } catch (error) {
   errors.push(error instanceof Error ? error.message : String(error));
 } finally {
