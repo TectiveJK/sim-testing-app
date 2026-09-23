@@ -67,9 +67,12 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 
 ## What is included now
 
+- Standalone checklist: this app does not control or talk to SkyCommand
+- Read the procedure here, fly the test in SkyCommand, then record **PASS** / **FAIL** / **BLOCKED** / **NOT TESTED** plus Notes / Observations
+- **Next test** after each result
 - 100 built-in tests from the current state → command matrix (Corridor, Viewpoint, LIP, EFL, Return to Hive, RTL, Deployed on hive, PostCTL, Loiter × Complete, arm, mission, loiter, POSCTL, EFL, Land, RTL)
 - Mission walkthroughs with step-by-step results
-- Test runs that snapshot software versions and `.deb` artifacts
+- Test runs that store optional software-version labels and `.deb` artifact names
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
