@@ -1,5 +1,22 @@
 # sim-testing-app
 
+## Share this app
+
+Send this link to other testers:
+
+**https://github.com/TectiveJK/sim-testing-app**
+
+The repository is public. Anyone with the link can open it, clone it, and run the lab on their own Ubuntu machine:
+
+```bash
+git clone https://github.com/TectiveJK/sim-testing-app.git
+cd sim-testing-app
+npm install
+npm run dev
+```
+
+Then open [http://127.0.0.1:43147](http://127.0.0.1:43147). Each tester keeps their own results locally. Use **Export PDF** to share a test-run report.
+
 ## Description
 
 SIM Flight Testing is a local Ubuntu application for flight testing and regression testing of the drone in the company SIM environment.
@@ -44,6 +61,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
+- Share link for other testers: https://github.com/TectiveJK/sim-testing-app
 - Local storage on the tester’s Ubuntu machine
 
 ## Desktop icon (Ubuntu)

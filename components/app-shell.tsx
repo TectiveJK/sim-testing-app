@@ -14,6 +14,7 @@ import {
   Route,
 } from "lucide-react";
 import { useState } from "react";
+import { ShareAppLink } from "@/components/share-app-link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -77,10 +78,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
         <NavLinks />
         <Separator className="my-5" />
-        <p className="px-2 text-xs leading-relaxed text-muted-foreground">
+        <p className="mb-4 px-2 text-xs leading-relaxed text-muted-foreground">
           Record SIM and drone results after every SkyCommand or firmware release. New tests can be
           added from the catalog without changing the app structure.
         </p>
+        <ShareAppLink compact />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -100,6 +102,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </SheetHeader>
             <div className="px-2 pb-6">
               <NavLinks onNavigate={() => setOpen(false)} />
+              <Separator className="my-5" />
+              <ShareAppLink compact />
             </div>
           </SheetContent>
         </Sheet>

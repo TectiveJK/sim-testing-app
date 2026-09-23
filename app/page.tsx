@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { DownloadLink } from "@/components/download-link";
 import { LinkButton } from "@/components/link-button";
+import { ShareAppLink } from "@/components/share-app-link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
@@ -34,6 +35,19 @@ export default function DashboardPage() {
           </LinkButton>
         }
       />
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Share this app</CardTitle>
+          <CardDescription>
+            Send the GitHub link to other testers so they can install SIM Flight Testing on their
+            Ubuntu machine.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ShareAppLink />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
