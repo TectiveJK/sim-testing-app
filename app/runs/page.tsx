@@ -20,7 +20,7 @@ export default function RunsPage() {
       <PageHeader
         eyebrow="Regression testing"
         title="Test runs"
-        description="Create a new run after each SkyCommand / SIM or drone software release. The catalog is copied in automatically so you do not rebuild the suite."
+        description="A test run is a checklist session. Open a test, do the actions in SkyCommand, then record the result here. The catalog is attached automatically."
         actions={
           <LinkButton href="/runs/new">
             <Plus />

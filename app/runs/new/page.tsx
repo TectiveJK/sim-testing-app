@@ -20,9 +20,9 @@ export default function NewRunPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <PageHeader
-        eyebrow="New regression pass"
+        eyebrow="New checklist session"
         title="Create test run"
-        description="The existing catalog is attached automatically. Last-successful .deb filenames are snapshotted onto this run so later comparisons stay accurate."
+        description="This starts a recording session for the catalog. You will still fly every test yourself in SkyCommand. Versions and .deb names are only labels for later comparison."
       />
 
       <form action="/api/runs" method="post" className="space-y-6">
@@ -30,7 +30,7 @@ export default function NewRunPage() {
           <CardHeader>
             <CardTitle>Software versions</CardTitle>
             <CardDescription>
-              Record the SkyCommand / SIM build and the drone software or firmware under test.
+              Optional labels for the software you will test by hand in SkyCommand. This app does not connect to that software.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">

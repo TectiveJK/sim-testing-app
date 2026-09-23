@@ -1,18 +1,20 @@
 import type { TestStatus } from "@/lib/types";
 
+export const QUICK_STATUSES = ["passed", "failed", "blocked", "not_tested"] as const;
+
 export const STATUS_LABELS: Record<TestStatus, string> = {
-  passed: "Passed",
-  failed: "Failed",
-  blocked: "Blocked / Cannot Test",
-  not_tested: "Not Tested",
-  not_applicable: "Not Applicable",
+  passed: "PASS",
+  failed: "FAIL",
+  blocked: "BLOCKED",
+  not_tested: "NOT TESTED",
+  not_applicable: "N/A",
 };
 
 export const STATUS_SHORT: Record<TestStatus, string> = {
-  passed: "Pass",
-  failed: "Fail",
-  blocked: "Blocked",
-  not_tested: "Untested",
+  passed: "PASS",
+  failed: "FAIL",
+  blocked: "BLOCKED",
+  not_tested: "NOT TESTED",
   not_applicable: "N/A",
 };
 
@@ -59,5 +61,22 @@ export function statusCell(status: TestStatus | undefined, exists: boolean) {
       return "bg-slate-500/60 text-slate-100";
     default:
       return "bg-sky-900/70 text-sky-100 border border-sky-500/30";
+  }
+}
+
+export function scoreButtonClass(status: TestStatus, selected: boolean) {
+  const base =
+    "flex h-12 min-w-[7.5rem] flex-1 items-center justify-center rounded-lg border text-sm font-semibold";
+  switch (status) {
+    case "passed":
+      return `${base} ${selected ? "border-emerald-400 bg-emerald-500 text-emerald-50" : "border-emerald-500/40 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"}`;
+    case "failed":
+      return `${base} ${selected ? "border-red-400 bg-red-500 text-red-50" : "border-red-500/40 bg-red-500/10 text-red-200 hover:bg-red-500/20"}`;
+    case "blocked":
+      return `${base} ${selected ? "border-amber-400 bg-amber-500 text-amber-50" : "border-amber-500/40 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20"}`;
+    case "not_tested":
+      return `${base} ${selected ? "border-sky-300 bg-sky-500 text-sky-50" : "border-border bg-background text-muted-foreground hover:bg-muted"}`;
+    default:
+      return `${base} ${selected ? "bg-primary text-primary-foreground" : "border-border bg-background hover:bg-muted"}`;
   }
 }

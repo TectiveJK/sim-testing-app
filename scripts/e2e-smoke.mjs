@@ -53,7 +53,7 @@ try {
   );
   const after = await page.getByTestId("result-title").innerText();
   assert(after.includes("RTL"), `Execute panel did not switch, stayed ${after}`);
-  await page.getByRole("button", { name: "Passed", exact: true }).click();
+  await page.getByRole("button", { name: "PASS", exact: true }).click();
   await page.waitForTimeout(300);
 
   await page.waitForSelector('[data-testid="export-pdf"]');

@@ -25,9 +25,9 @@ export default function DashboardPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="SIM environment"
-        title="Flight testing lab"
-        description="Run the drone transition catalog after every SkyCommand, SIM, or firmware update. Record results, keep version history, and spot regressions between test runs."
+        eyebrow="Checklist"
+        title="SIM Flight Testing"
+        description="Read each test here, perform it manually in SkyCommand on your other monitor, then come back and record PASS, FAIL, BLOCKED, or NOT TESTED. This app does not control or talk to SkyCommand."
         actions={
           <LinkButton href="/runs/new">
             <Plus />
@@ -65,7 +65,7 @@ export default function DashboardPage() {
             <CardTitle className="text-3xl">{store.runs.length}</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Each run snapshots SkyCommand, drone software, and last-successful .deb artifacts.
+            Each run is a recorded checklist session with optional software-version labels.
           </CardContent>
         </Card>
         <Card>
@@ -123,7 +123,7 @@ export default function DashboardPage() {
               <div className="space-y-4">
                 <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
-                    <div className="text-muted-foreground">SkyCommand / SIM</div>
+                    <div className="text-muted-foreground">Software under test</div>
                     <div className="font-medium">{latest.skyCommandVersion || "Not set"}</div>
                   </div>
                   <div>
@@ -155,8 +155,8 @@ export default function DashboardPage() {
             ) : (
               <div className="rounded-xl border border-dashed px-4 py-10 text-center">
                 <p className="text-sm text-muted-foreground">
-                  After a software update, start a new test run from the existing catalog instead of
-                  recreating tests by hand.
+                  After a software update, start a new checklist run. Fly each item in SkyCommand,
+                  then record the result here.
                 </p>
                 <LinkButton href="/runs/new" className="mt-4">
                   Create first test run

@@ -15,7 +15,7 @@ export default function ArtifactsPage() {
       <PageHeader
         eyebrow="Build tracking"
         title="Last successful artifacts"
-        description="Keep the current known-good SkyCommand / SIM .deb filenames here. Every new test run snapshots this list so you can see which packages were in play when a result was recorded."
+        description="Optional labels for the last successful .deb packages. They are copied onto each test run for your records. This app does not install or talk to those packages."
       />
 
       <Card>

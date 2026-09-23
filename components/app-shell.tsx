@@ -73,14 +73,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <div className="text-sm font-semibold tracking-tight">SIM Flight Testing</div>
-            <div className="text-xs text-muted-foreground">Regression lab</div>
+            <div className="text-xs text-muted-foreground">Test checklist</div>
           </div>
         </Link>
         <NavLinks />
         <Separator className="my-5" />
         <p className="mb-4 px-2 text-xs leading-relaxed text-muted-foreground">
-          Record SIM and drone results after every SkyCommand or firmware release. New tests can be
-          added from the catalog without changing the app structure.
+          Checklist only. Read the procedure, do the test in SkyCommand on the other monitor, then
+          record PASS / FAIL / BLOCKED / NOT TESTED here.
         </p>
         <ShareAppLink compact />
       </aside>

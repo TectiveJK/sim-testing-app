@@ -19,7 +19,7 @@ export default function MissionsPage() {
       <PageHeader
         eyebrow="Mission-based testing"
         title="Scenarios"
-        description="Each mission walks through a sequence of catalog tests. Score every step, then treat the last step or the run summary as the overall mission result."
+        description="A mission is an ordered checklist. Read each step here, do it in SkyCommand, then record the result and move to the next step."
       />
       <div className="space-y-8">
         {[...grouped.entries()].map(([category, missions]) => (

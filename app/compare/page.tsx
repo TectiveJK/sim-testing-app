@@ -35,7 +35,7 @@ export default function ComparePage() {
       <PageHeader
         eyebrow="Regression"
         title="Compare test runs"
-        description="See whether a function that previously passed still passes after a new SkyCommand or drone software release."
+        description="Compare two recorded checklist runs. This only uses results you typed in. It does not read SkyCommand."
       />
 
       {store.runs.length < 2 ? (

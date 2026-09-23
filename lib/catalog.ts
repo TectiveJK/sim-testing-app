@@ -148,7 +148,7 @@ function commandLabel(command: string) {
 
 function describe(state: string, phase: string, command: string) {
   const from = phase ? `${state} — ${phase}` : state;
-  return `From ${from}, command ${commandLabel(command)} and verify the SIM/drone response.`;
+  return `From ${from}, use SkyCommand to ${commandLabel(command).toLowerCase()} and check that the drone responds as expected.`;
 }
 
 function expected(state: string, phase: string, command: string) {
@@ -158,10 +158,10 @@ function expected(state: string, phase: string, command: string) {
 
 function procedure(state: string, phase: string, command: string) {
   return [
-    `Establish the drone in ${phase ? `${state} / ${phase}` : state} in the SIM environment.`,
-    `Issue the ${command} command from SkyCommand / GCS.`,
-    "Observe mode change, trajectory, and telemetry.",
-    "Record Passed if the response matches the expected behaviour; otherwise record Failed with notes, logs, and screenshots.",
+    `In SkyCommand, put the drone in ${phase ? `${state} / ${phase}` : state}.`,
+    `Issue the ${command} command in SkyCommand.`,
+    "Watch the drone response on the SkyCommand / SIM monitors.",
+    "Come back here and record PASS or FAIL, with notes if anything unexpected happened.",
   ].join(" ");
 }
 

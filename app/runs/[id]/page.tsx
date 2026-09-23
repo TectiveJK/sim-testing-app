@@ -72,6 +72,8 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
 
   const selected = catalog.tests.find((test) => test.id === selectedId) ?? filtered[0];
   const selectedResult = selected ? byTestId.get(selected.id) : undefined;
+  const selectedIndex = selected ? filtered.findIndex((test) => test.id === selected.id) : -1;
+  const nextTest = selectedIndex >= 0 ? filtered[selectedIndex + 1] : undefined;
 
   if (!run) {
     return (
@@ -139,7 +141,7 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
       <PageHeader
         eyebrow={run.completedAt ? "Completed run" : "In progress"}
         title={run.name}
-        description={`${formatDateTime(run.startedAt)} · SkyCommand ${run.skyCommandVersion || "—"} · Drone ${run.droneVersion || "—"} · ${run.tester || "No tester"}`}
+        description={`Checklist run · ${formatDateTime(run.startedAt)} · Software ${run.skyCommandVersion || "—"} / ${run.droneVersion || "—"} · ${run.tester || "No tester"}`}
         actions={
           <>
             {recorded > 0 ? (
@@ -195,7 +197,7 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
         items={[
           {
             value: "execute",
-            label: "Execute",
+            label: "Record results",
             href: queryHref(pathname, searchParams, { view: "execute" }),
           },
           {
@@ -287,6 +289,11 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
                     result={selectedResult}
                     runId={run.id}
                     tester={run.tester}
+                    nextHref={
+                      nextTest
+                        ? queryHref(pathname, searchParams, { view: "execute", test: nextTest.id })
+                        : undefined
+                    }
                   />
                 ) : (
                   <p className="text-sm text-muted-foreground">Select a test to record a result.</p>
@@ -320,7 +327,7 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <Field
-                label="SkyCommand / SIM version"
+                label="Software version under test"
                 value={run.skyCommandVersion}
                 onSave={(value) => updateRun(run.id, { skyCommandVersion: value })}
               />

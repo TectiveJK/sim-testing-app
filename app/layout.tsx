@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SIM Flight Testing",
   description:
-    "Flight-testing and regression-testing lab for SkyCommand / SIM and drone software.",
+    "Checklist and result-recording app for SIM flight tests. SkyCommand stays separate.",
 };
 
 export const dynamic = "force-dynamic";

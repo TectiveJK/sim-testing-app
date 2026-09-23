@@ -57,7 +57,7 @@ function CatalogInner() {
       <PageHeader
         eyebrow="Catalog"
         title="Flight functions and transitions"
-        description="Each row is a current SIM/drone state. Each column is a command. Empty cells are combinations that are not in the current test list. Add new cases here as you receive more flight functions."
+        description="Instructions only. Each cell is a test you will perform yourself in SkyCommand. Empty cells are not in the suite. Scoring happens in a test run, not here."
         actions={
           <Button onClick={() => setOpen(true)}>Add test</Button>
         }
@@ -117,8 +117,8 @@ function CatalogInner() {
             }}
           />
           <p className="mt-2 text-xs text-muted-foreground">
-            Showing {filtered.length} of {catalog.tests.length} tests. Cells marked — exist in the
-            catalog and are ready to score in a test run.
+            Showing {filtered.length} of {catalog.tests.length} tests. Cells marked — are checklist
+            items. Score them in a test run after you have flown them in SkyCommand.
           </p>
       </ViewPanel>
       <ViewPanel when="list" active={view}>

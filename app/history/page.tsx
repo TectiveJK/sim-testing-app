@@ -31,7 +31,7 @@ export default function HistoryPage() {
       <PageHeader
         eyebrow="History"
         title="Previous executions"
-        description="Look up one function and see how it behaved across SkyCommand and drone software versions."
+        description="Look up one checklist item and see the results you recorded on earlier runs."
       />
 
       <div className="mb-4 grid gap-2 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">

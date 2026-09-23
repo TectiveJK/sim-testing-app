@@ -21,21 +21,29 @@ npm run setup
 
 ## Description
 
-SIM Flight Testing is a local Ubuntu application for flight testing and regression testing of the drone in the company SIM environment.
+SIM Flight Testing is a local Ubuntu **testing checklist and result-recording** application. It does not control, communicate with, or receive data from SkyCommand. The two applications stay completely independent.
 
-The app contains the flight functions, commands, and mission scenarios that testers run against SkyCommand / SIM. Each function can be tested on its own or as part of a longer mission. Whenever SkyCommand / SIM software, drone software / firmware, or any other component that affects flight behaviour is updated, the tester creates a new test run from the existing suite and records whether previously verified behaviour still works.
+The tester reads the procedure in SIM Flight Testing, performs the required actions manually in SkyCommand on the other monitor, then returns here to record the result.
 
-For every test the tester can record:
+The workflow is:
 
-- status: Passed, Failed, Blocked / Cannot Test, Not Tested, or Not Applicable
-- notes and observations (unexpected behaviour, errors, telemetry)
-- attachments such as screenshots, logs, error messages, and reports
-- SkyCommand / SIM version
-- drone software / firmware version
-- date and time
-- tester
-- test name / test ID
-- related mission, if the test is part of a scenario
+1. Read the test on SIM Flight Testing
+2. Perform the test manually in SkyCommand
+3. Record the result and observations in SIM Flight Testing
+4. Move to the next test
+
+For every test the tester can quickly select:
+
+- **PASS**
+- **FAIL**
+- **BLOCKED**
+- **NOT TESTED**
+
+There is also a simple **Notes / Observations** field.
+
+Optional fields can still be stored with a run (software version labels, tester name, date, attachments) so later runs can be compared. Those labels are written by the tester. The app never reads them from SkyCommand.
+
+The catalog holds the flight functions, commands, and mission scenarios. Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from the existing suite and records whether previously verified behaviour still works.
 
 The app keeps a history of previous executions so a function that passed on one release can be compared with the same function after a later release. For example, Return to Launch after GCS connection loss may pass on SkyCommand 1.2.0 / Drone 3.4.1 and fail on SkyCommand 1.3.0 / Drone 3.4.2.
 
@@ -96,18 +104,18 @@ npm run setup
 
 ## Typical workflow
 
-1. Update the last successful `.deb` filenames on the Artifacts page.
-2. After a SkyCommand or drone software update, create a new test run.
-3. Enter the SkyCommand / SIM version, drone version, tester, and notes.
-4. Score each function or walk a mission, adding notes and attachments where needed.
-5. Use **Export PDF** on the run (or the runs list) to share a partial or complete report.
-6. Use **Delete** next to Export PDF to remove a run you did not need or started by mistake.
-7. Compare the new run with the previous run to find regressions.
-8. Send **https://github.com/TectiveJK/sim-testing-app** to other testers so they can run `npm run setup` once and then use the app without further commands.
+1. After a software update, create a new test run and optionally write the version labels.
+2. Open a test, read the procedure, and do those actions in SkyCommand.
+3. Come back and record **PASS**, **FAIL**, **BLOCKED**, or **NOT TESTED**, plus notes.
+4. Click **Next test** and repeat.
+5. Use **Export PDF** to share a partial or complete report.
+6. Use **Delete** next to Export PDF to remove a run you did not need.
+7. Compare two recorded runs if you want to see regressions.
+8. Send **https://github.com/TectiveJK/sim-testing-app** to other testers so they can install the same checklist.
 
 ## Test runs
 
-Each run copies the current catalog so the tester scores the same suite against one SkyCommand / SIM version and one drone software version.
+Each run copies the current catalog so the tester records the same suite against one labelled software version. SkyCommand is used only on the other monitor to fly the test.
 
 - **Export PDF** appears after at least one test is scored. Use it to share a partial or complete report.
 - **Delete** is next to Export PDF on the Test runs list and on the run page. Use it to remove a run you did not do.
