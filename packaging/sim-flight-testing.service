@@ -1,0 +1,15 @@
+[Unit]
+Description=SIM Flight Testing
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=APP_ROOT
+ExecStart=APP_ROOT/scripts/sim-flight-testing-server.sh
+Restart=always
+RestartSec=3
+Environment=PORT=43147
+
+[Install]
+WantedBy=default.target

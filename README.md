@@ -8,16 +8,16 @@ Send this GitHub link to other testers. This is the link that works for other pe
 
 Do **not** send `http://127.0.0.1:43147`. That address is only the lab on *this* computer, after the app has been started. It will fail in another browser, on another laptop, or if the server is not running.
 
-The repository is public. Anyone with the GitHub link can clone it and run the lab on their own Ubuntu machine:
+The repository is public. Anyone with the GitHub link can install it once on their Ubuntu machine. After that the lab starts by itself at login, and **http://127.0.0.1:43147** works without typing a command:
 
 ```bash
 git clone https://github.com/TectiveJK/sim-testing-app.git
 cd sim-testing-app
 npm install
-npm run dev
+npm run setup
 ```
 
-After `npm run dev` finishes, open **http://127.0.0.1:43147** on that same computer. Or run `npm run desktop-icon` and double-click **SIM Flight Testing**. Each tester keeps their own results locally. Use **Export PDF** to share a test-run report.
+`npm run setup` is one-time. It installs the desktop icon, starts the server, and enables start-at-login. After that, open **http://127.0.0.1:43147** or double-click **SIM Flight Testing**. Each tester keeps their own results locally. Use **Export PDF** to share a test-run report.
 
 ## Description
 
@@ -43,7 +43,7 @@ After some or all tests in a run have been scored, the tester can use **Export P
 
 A test run that was started by mistake, or that the tester did not actually fly, can be removed with **Delete** on the Test runs page. The button sits next to Export PDF. Confirming delete removes that run and all of its results.
 
-The app itself can be shared with other testers. The public link is **https://github.com/TectiveJK/sim-testing-app**. Copy it from the dashboard **Share this app** card, from **Share app** / **Copy link** in the sidebar, or from the top of this README. Other testers clone the repository and run the lab on their own Ubuntu machine. Results stay local to each machine.
+The app itself can be shared with other testers. The public link is **https://github.com/TectiveJK/sim-testing-app**. Copy it from the dashboard **Share this app** card, from **Share app** / **Copy link** in the sidebar, or from the top of this README. Other testers clone the repository and run `npm run setup` once. After that the lab starts when they log in, and they open http://127.0.0.1:43147 without typing a command. Results stay local to each machine.
 
 It also stores the last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
 
@@ -66,42 +66,32 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
 - Share link for other testers: https://github.com/TectiveJK/sim-testing-app
+- Starts at login after one-time setup, so http://127.0.0.1:43147 works without a command
 - Local storage on the tester’s Ubuntu machine
 
-## Desktop icon (Ubuntu)
+## Install once (Ubuntu)
 
-From the project folder:
-
-```bash
-npm run desktop-icon
-```
-
-or:
-
-```bash
-bash scripts/install-desktop-icon.sh
-```
-
-That puts **SIM Flight Testing** on your Desktop and in the application menu. Double-click the icon to start the local server and open the lab in the browser. If Ubuntu asks, choose **Allow Launching**.
-
-The launcher starts the app on [http://127.0.0.1:43147](http://127.0.0.1:43147) if it is not already running.
-
-## Run locally (Ubuntu)
-
-Requires Node.js 20+.
+Requires Node.js 20+. From the project folder:
 
 ```bash
 npm install
-npm run dev
+npm run setup
 ```
 
-When the server is running on this machine, open http://127.0.0.1:43147 in a browser on the same computer.
+That does all of this:
+
+- installs **SIM Flight Testing** on the Desktop and in the application menu
+- starts the lab now
+- starts it again automatically when you log in or reboot
+
+After that, do not run `npm run dev`. Just open **http://127.0.0.1:43147** or double-click the desktop icon. If Ubuntu asks, choose **Allow Launching**.
 
 Results are saved in `data/store.json`. Uploaded files go to `data/attachments/`.
 
+If you pull a newer version from GitHub, the next start rebuilds automatically. To start it immediately after a pull:
+
 ```bash
-npm run build
-npm start
+npm run setup
 ```
 
 ## Typical workflow

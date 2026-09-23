@@ -8,6 +8,8 @@
     "start": "next start --hostname 0.0.0.0 --port 43147",
     "lint": "eslint",
     "desktop-icon": "bash scripts/install-desktop-icon.sh",
+    "setup": "bash scripts/install-desktop-icon.sh",
+    "server": "bash scripts/sim-flight-testing-server.sh",
     "smoke": "node scripts/e2e-smoke.mjs"
   },
   "dependencies": {
