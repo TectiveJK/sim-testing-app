@@ -40,6 +40,24 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - History and side-by-side run comparison for regressions
 - Local storage on the tester’s Ubuntu machine
 
+## Desktop icon (Ubuntu)
+
+From the project folder:
+
+```bash
+npm run desktop-icon
+```
+
+or:
+
+```bash
+bash scripts/install-desktop-icon.sh
+```
+
+That puts **SIM Flight Testing** on your Desktop and in the application menu. Double-click the icon to start the local server and open the lab in the browser. If Ubuntu asks, choose **Allow Launching**.
+
+The launcher starts the app on [http://127.0.0.1:43147](http://127.0.0.1:43147) if it is not already running.
+
 ## Run locally (Ubuntu)
 
 Requires Node.js 20+.
