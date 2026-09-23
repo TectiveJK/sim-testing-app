@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
 import { PageHeader } from "@/components/page-header";
 import { ArtifactEditor } from "@/components/artifact-editor";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { LinkButton } from "@/components/link-button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,17 +14,8 @@ import { useAppData } from "@/components/data-provider";
 import { runTitle } from "@/lib/format";
 
 export default function NewRunPage() {
-  const router = useRouter();
-  const { store, createRun, saveArtifacts } = useAppData();
+  const { store } = useAppData();
   const nextNumber = store.runs.reduce((max, run) => Math.max(max, run.number), 0) + 1;
-  const [name, setName] = useState(runTitle(nextNumber));
-  const [skyCommandVersion, setSkyCommandVersion] = useState("");
-  const [droneVersion, setDroneVersion] = useState("");
-  const [tester, setTester] = useState(store.testers[0] || "");
-  const [notes, setNotes] = useState("");
-  const [cloneFromId, setCloneFromId] = useState("");
-  const [artifacts, setArtifacts] = useState(store.artifacts);
-  const [saving, setSaving] = useState(false);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -36,38 +25,7 @@ export default function NewRunPage() {
         description="The existing catalog is attached automatically. Last-successful .deb filenames are snapshotted onto this run so later comparisons stay accurate."
       />
 
-      <form
-        className="space-y-6"
-        onSubmit={async (event) => {
-          event.preventDefault();
-          if (!skyCommandVersion.trim() || !droneVersion.trim()) {
-            toast.error("Enter both the SkyCommand / SIM version and the drone software version.");
-            return;
-          }
-          if (!tester.trim()) {
-            toast.error("Enter the tester name.");
-            return;
-          }
-          setSaving(true);
-          try {
-            await saveArtifacts(artifacts);
-            const id = await createRun({
-              name,
-              skyCommandVersion,
-              droneVersion,
-              tester,
-              notes,
-              cloneFromId: cloneFromId || undefined,
-            });
-            toast.success("Test run created");
-            router.push(`/runs/${id}`);
-          } catch (error) {
-            toast.error(error instanceof Error ? error.message : "Could not create run");
-          } finally {
-            setSaving(false);
-          }
-        }}
-      >
+      <form action="/api/runs" method="post" className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Software versions</CardTitle>
@@ -78,15 +36,14 @@ export default function NewRunPage() {
           <CardContent className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5 sm:col-span-2">
               <Label htmlFor="run-name">Test run name</Label>
-              <Input id="run-name" value={name} onChange={(event) => setName(event.target.value)} />
+              <Input id="run-name" name="name" defaultValue={runTitle(nextNumber)} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="sim-version">SkyCommand / SIM version</Label>
               <Input
                 id="sim-version"
                 name="skyCommandVersion"
-                value={skyCommandVersion}
-                onChange={(event) => setSkyCommandVersion(event.target.value)}
+                data-testid="sky-command-version"
                 placeholder="1.3.0"
               />
             </div>
@@ -95,8 +52,7 @@ export default function NewRunPage() {
               <Input
                 id="drone-version"
                 name="droneVersion"
-                value={droneVersion}
-                onChange={(event) => setDroneVersion(event.target.value)}
+                data-testid="drone-version"
                 placeholder="3.4.2"
               />
             </div>
@@ -107,8 +63,8 @@ export default function NewRunPage() {
                 name="tester"
                 list="testers"
                 autoComplete="name"
-                value={tester}
-                onChange={(event) => setTester(event.target.value)}
+                data-testid="tester"
+                defaultValue={store.testers[0] || ""}
                 placeholder="Your name"
               />
               <datalist id="testers">
@@ -119,19 +75,7 @@ export default function NewRunPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="clone">Base on previous run</Label>
-              <NativeSelect
-                id="clone"
-                value={cloneFromId}
-                onChange={(event) => {
-                  setCloneFromId(event.target.value);
-                  const source = store.runs.find((run) => run.id === event.target.value);
-                  if (source) {
-                    setSkyCommandVersion(source.skyCommandVersion);
-                    setDroneVersion(source.droneVersion);
-                    setTester(source.tester);
-                  }
-                }}
-              >
+              <NativeSelect id="clone" name="cloneFromId" defaultValue="">
                 <option value="">Fresh run (empty results)</option>
                 {store.runs.map((run) => (
                   <option key={run.id} value={run.id}>
@@ -144,8 +88,7 @@ export default function NewRunPage() {
               <Label htmlFor="run-notes">Run notes</Label>
               <Textarea
                 id="run-notes"
-                value={notes}
-                onChange={(event) => setNotes(event.target.value)}
+                name="notes"
                 placeholder="Release notes, SIM setup, hardware, or anything the lab should remember."
               />
             </div>
@@ -161,16 +104,16 @@ export default function NewRunPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ArtifactEditor artifacts={artifacts} onChange={setArtifacts} />
+            <ArtifactEditor artifacts={store.artifacts} onChange={() => undefined} />
           </CardContent>
         </Card>
 
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={() => router.push("/runs")}>
+          <LinkButton href="/runs" variant="outline">
             Cancel
-          </Button>
-          <button type="submit" disabled={saving} className={cn(buttonVariants())}>
-            {saving ? "Creating…" : "Start test run"}
+          </LinkButton>
+          <button type="submit" data-testid="start-test-run" className={cn(buttonVariants())}>
+            Start test run
           </button>
         </div>
       </form>

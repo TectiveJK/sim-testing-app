@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { AlertTriangle, ArrowRight, CheckCircle2, Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+import { LinkButton } from "@/components/link-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
@@ -28,10 +27,10 @@ export default function DashboardPage() {
         title="Flight testing lab"
         description="Run the drone transition catalog after every SkyCommand, SIM, or firmware update. Record results, keep version history, and spot regressions between test runs."
         actions={
-          <Button render={<Link href="/runs/new" />}>
+          <LinkButton href="/runs/new">
             <Plus />
             New test run
-          </Button>
+          </LinkButton>
         }
       />
 
@@ -90,10 +89,10 @@ export default function DashboardPage() {
               </CardDescription>
             </div>
             {latest ? (
-              <Button variant="outline" size="sm" render={<Link href={`/runs/${latest.id}`} />}>
+              <LinkButton href={`/runs/${latest.id}`} variant="outline" size="sm">
                 Continue
                 <ArrowRight />
-              </Button>
+              </LinkButton>
             ) : null}
           </CardHeader>
           <CardContent>
@@ -136,9 +135,9 @@ export default function DashboardPage() {
                   After a software update, start a new test run from the existing catalog instead of
                   recreating tests by hand.
                 </p>
-                <Button className="mt-4" render={<Link href="/runs/new" />}>
+                <LinkButton href="/runs/new" className="mt-4">
                   Create first test run
-                </Button>
+                </LinkButton>
               </div>
             )}
           </CardContent>
@@ -158,9 +157,9 @@ export default function DashboardPage() {
                 </li>
               ))}
             </ul>
-            <Button variant="outline" size="sm" className="mt-4" render={<Link href="/artifacts" />}>
+            <LinkButton href="/artifacts" variant="outline" size="sm" className="mt-4">
               Edit artifacts
-            </Button>
+            </LinkButton>
           </CardContent>
         </Card>
       </div>
@@ -216,9 +215,9 @@ export default function DashboardPage() {
                 </div>
               </div>
             )}
-            <Button variant="outline" size="sm" className="mt-4" render={<Link href="/compare" />}>
+            <LinkButton href="/compare" variant="outline" size="sm" className="mt-4">
               Open full comparison
-            </Button>
+            </LinkButton>
           </CardContent>
         </Card>
       ) : null}

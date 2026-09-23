@@ -1,18 +1,16 @@
 import { TEST_STATUSES, type TestStatus } from "@/lib/types";
 import { updateStore } from "@/lib/store";
 
-export async function PUT(request: Request) {
-  const body = (await request.json()) as {
-    id?: string;
-    testRunId: string;
-    testCaseId: string;
-    status?: TestStatus;
-    notes?: string;
-    tester?: string;
-  };
-
+async function saveResult(body: {
+  id?: string;
+  testRunId: string;
+  testCaseId: string;
+  status?: TestStatus;
+  notes?: string;
+  tester?: string;
+}) {
   if (!body.testRunId || !body.testCaseId) {
-    return Response.json({ error: "Missing test identity" }, { status: 400 });
+    throw new Error("Missing test identity");
   }
 
   const store = await updateStore((current) => {
@@ -46,11 +44,40 @@ export async function PUT(request: Request) {
     if (body.tester !== undefined) result.tester = body.tester;
   });
 
-  const result = store.results.find((item) =>
+  return store.results.find((item) =>
     body.id
       ? item.id === body.id
       : item.testRunId === body.testRunId && item.testCaseId === body.testCaseId,
   );
+}
 
-  return Response.json({ result });
+export async function POST(request: Request) {
+  const form = await request.formData();
+  const testRunId = String(form.get("testRunId") || "");
+  const testCaseId = String(form.get("testCaseId") || "");
+  const status = form.get("status") ? (String(form.get("status")) as TestStatus) : undefined;
+  const notes = form.has("notes") ? String(form.get("notes") || "") : undefined;
+  const tester = form.has("tester") ? String(form.get("tester") || "") : undefined;
+  const next = String(form.get("next") || `/runs/${testRunId}?test=${testCaseId}&view=execute`);
+  await saveResult({ testRunId, testCaseId, status, notes, tester });
+  return Response.redirect(new URL(next, request.url), 303);
+}
+
+export async function PUT(request: Request) {
+  const body = (await request.json()) as {
+    id?: string;
+    testRunId: string;
+    testCaseId: string;
+    status?: TestStatus;
+    notes?: string;
+    tester?: string;
+  };
+
+  try {
+    const result = await saveResult(body);
+    return Response.json({ result });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not save result";
+    return Response.json({ error: message }, { status: 400 });
+  }
 }

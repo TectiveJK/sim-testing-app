@@ -86,23 +86,57 @@ export function DataProvider({
         await reload();
       },
       saveResult: async (payload) => {
+        setData((current) => ({
+          ...current,
+          store: {
+            ...current.store,
+            results: current.store.results.map((item) => {
+              const match = payload.id
+                ? item.id === payload.id
+                : item.testRunId === payload.testRunId && item.testCaseId === payload.testCaseId;
+              if (!match) return item;
+              return {
+                ...item,
+                status: payload.status ?? item.status,
+                notes: payload.notes ?? item.notes,
+                tester: payload.tester ?? item.tester,
+                executedAt:
+                  payload.status === "not_tested"
+                    ? undefined
+                    : payload.status
+                      ? new Date().toISOString()
+                      : item.executedAt,
+              };
+            }),
+          },
+        }));
         const response = await fetch("/api/results", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
-        if (!response.ok) throw new Error("Could not save result");
+        if (!response.ok) {
+          await reload();
+          throw new Error("Could not save result");
+        }
         const json = (await response.json()) as { result: TestResult };
         await reload();
         return json.result;
       },
       saveArtifacts: async (artifacts) => {
+        setData((current) => ({
+          ...current,
+          store: { ...current.store, artifacts },
+        }));
         const response = await fetch("/api/artifacts", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ artifacts }),
         });
-        if (!response.ok) throw new Error("Could not save artifacts");
+        if (!response.ok) {
+          await reload();
+          throw new Error("Could not save artifacts");
+        }
         await reload();
       },
       addTest: async (payload) => {

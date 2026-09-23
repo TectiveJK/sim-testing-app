@@ -3,13 +3,14 @@
 import { Paperclip, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { useAppData } from "@/components/data-provider";
 import { formatBytes, formatDateTime } from "@/lib/format";
 import { STATUS_LABELS } from "@/lib/status";
-import { TEST_STATUSES, type TestCase, type TestResult, type TestStatus } from "@/lib/types";
+import { TEST_STATUSES, type TestCase, type TestResult } from "@/lib/types";
 
 export function ResultPanel({
   test,
@@ -24,35 +25,7 @@ export function ResultPanel({
   tester?: string;
   compact?: boolean;
 }) {
-  const { saveResult, uploadAttachment, deleteAttachment } = useAppData();
-
-  const setStatus = async (status: TestStatus) => {
-    try {
-      await saveResult({
-        id: result.id,
-        testRunId: runId,
-        testCaseId: test.id,
-        status,
-        tester,
-      });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not save status");
-    }
-  };
-
-  const saveNotes = async (notes: string) => {
-    try {
-      await saveResult({
-        id: result.id,
-        testRunId: runId,
-        testCaseId: test.id,
-        notes,
-        tester,
-      });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not save notes");
-    }
-  };
+  const { uploadAttachment, deleteAttachment } = useAppData();
 
   return (
     <div className="space-y-5">
@@ -61,7 +34,9 @@ export function ResultPanel({
           <p className="font-mono text-xs text-muted-foreground">{test.id}</p>
           <StatusBadge status={result.status} />
         </div>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight">{test.name}</h2>
+        <h2 data-testid="result-title" className="mt-1 text-xl font-semibold tracking-tight">
+          {test.name}
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">{test.description}</p>
       </div>
 
@@ -86,15 +61,23 @@ export function ResultPanel({
         <Label className="mb-2 block">Result</Label>
         <div className="flex flex-wrap gap-2">
           {TEST_STATUSES.map((status) => (
-            <Button
-              key={status}
-              type="button"
-              size="sm"
-              variant={result.status === status ? "default" : "outline"}
-              onClick={() => setStatus(status)}
-            >
-              {STATUS_LABELS[status]}
-            </Button>
+            <form key={status} action="/api/results" method="post">
+              <input type="hidden" name="testRunId" value={runId} />
+              <input type="hidden" name="testCaseId" value={test.id} />
+              <input type="hidden" name="status" value={status} />
+              {tester ? <input type="hidden" name="tester" value={tester} /> : null}
+              <input
+                type="hidden"
+                name="next"
+                value={`/runs/${runId}?view=execute&test=${encodeURIComponent(test.id)}`}
+              />
+              <button
+                type="submit"
+                className={cn(buttonVariants({ size: "sm", variant: result.status === status ? "default" : "outline" }))}
+              >
+                {STATUS_LABELS[status]}
+              </button>
+            </form>
           ))}
         </div>
         {result.executedAt ? (
@@ -105,21 +88,27 @@ export function ResultPanel({
         ) : null}
       </div>
 
-      <div className="space-y-2">
+      <form action="/api/results" method="post" className="space-y-2">
+        <input type="hidden" name="testRunId" value={runId} />
+        <input type="hidden" name="testCaseId" value={test.id} />
+        {tester ? <input type="hidden" name="tester" value={tester} /> : null}
+        <input
+          type="hidden"
+          name="next"
+          value={`/runs/${runId}?view=execute&test=${encodeURIComponent(test.id)}`}
+        />
         <Label htmlFor={`notes-${result.id}`}>Notes and observations</Label>
         <Textarea
           id={`notes-${result.id}`}
-          key={`${result.id}-${result.notes}`}
+          name="notes"
           defaultValue={result.notes}
           placeholder="What happened in the SIM? Unexpected modes, errors, telemetry, or recovery notes."
           className="min-h-28"
-          onBlur={(event) => {
-            if (event.target.value !== result.notes) {
-              void saveNotes(event.target.value);
-            }
-          }}
         />
-      </div>
+        <button type="submit" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+          Save notes
+        </button>
+      </form>
 
       <div className="space-y-2">
         <Label>Attachments</Label>
@@ -127,10 +116,13 @@ export function ResultPanel({
           Screenshots, logs, error messages, or test reports from this execution.
         </p>
         <div className="flex flex-wrap items-center gap-2">
-          <Button type="button" variant="outline" size="sm" render={<label htmlFor={`file-${result.id}`} />}>
+          <label
+            htmlFor={`file-${result.id}`}
+            className={cn(buttonVariants({ variant: "outline", size: "sm" }), "cursor-pointer")}
+          >
             <Paperclip />
             Attach file
-          </Button>
+          </label>
           <input
             id={`file-${result.id}`}
             type="file"

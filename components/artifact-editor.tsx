@@ -15,26 +15,24 @@ export function ArtifactEditor({
   onChange: (artifacts: DebArtifact[]) => void;
   disabled?: boolean;
 }) {
-  const update = (index: number, patch: Partial<DebArtifact>) => {
-    onChange(artifacts.map((item, i) => (i === index ? { ...item, ...patch } : item)));
-  };
-
   return (
     <div className="space-y-3">
+      <input type="hidden" name="count" value={artifacts.length} />
       {artifacts.map((artifact, index) => (
         <div
           key={artifact.id}
           className="grid gap-3 rounded-xl border bg-card/60 p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_auto]"
         >
+          <input type="hidden" name={`id-${index}`} value={artifact.id} />
           <div className="space-y-1.5">
             <Label htmlFor={`${artifact.id}-pkg`} className="text-xs text-muted-foreground">
               Package
             </Label>
             <Input
               id={`${artifact.id}-pkg`}
-              value={artifact.packageName}
+              name={`packageName-${index}`}
+              defaultValue={artifact.packageName}
               disabled={disabled}
-              onChange={(event) => update(index, { packageName: event.target.value })}
               placeholder="autonomy-node"
             />
           </div>
@@ -44,9 +42,10 @@ export function ArtifactEditor({
             </Label>
             <Input
               id={`${artifact.id}-file`}
-              value={artifact.filename}
+              name={`filename-${index}`}
+              data-testid={`artifact-file-${artifact.packageName || artifact.id}`}
+              defaultValue={artifact.filename}
               disabled={disabled}
-              onChange={(event) => update(index, { filename: event.target.value })}
               placeholder="autonomy-node_1.0.0+12a9d76-b2_amd64.deb"
               className="font-mono text-xs sm:text-sm"
             />

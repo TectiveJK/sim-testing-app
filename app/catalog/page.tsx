@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/page-header";
 import { NativeSelect } from "@/components/native-select";
@@ -10,19 +12,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ViewPanel, ViewTabs } from "@/components/simple-tabs";
+import { queryHref, ViewPanel, ViewTabs } from "@/components/simple-tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { COMMANDS } from "@/lib/types";
 
 export default function CatalogPage() {
+  return (
+    <Suspense fallback={<p className="text-sm text-muted-foreground">Loading catalog…</p>}>
+      <CatalogInner />
+    </Suspense>
+  );
+}
+
+function CatalogInner() {
   const { catalog, addTest } = useAppData();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view") === "list" ? "list" : "matrix";
+  const selectedId = searchParams.get("test");
   const [query, setQuery] = useState("");
   const [state, setState] = useState("all");
   const [command, setCommand] = useState("all");
   const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [view, setView] = useState("matrix");
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -77,10 +89,17 @@ export default function CatalogPage() {
 
       <ViewTabs
         value={view}
-        onChange={setView}
         items={[
-          { value: "matrix", label: "Transition matrix" },
-          { value: "list", label: "List" },
+          {
+            value: "matrix",
+            label: "Transition matrix",
+            href: queryHref(pathname, searchParams, { view: "matrix" }),
+          },
+          {
+            value: "list",
+            label: "List",
+            href: queryHref(pathname, searchParams, { view: "list" }),
+          },
         ]}
       />
       <ViewPanel when="matrix" active={view}>
@@ -91,8 +110,10 @@ export default function CatalogPage() {
             phasesByState={catalog.phasesByState}
             selectedId={selected?.id}
             onSelect={(test) => {
-              setSelectedId(test.id);
-              setView("list");
+              window.location.href = queryHref(pathname, searchParams, {
+                view: "list",
+                test: test.id,
+              });
             }}
           />
           <p className="mt-2 text-xs text-muted-foreground">
@@ -111,24 +132,26 @@ export default function CatalogPage() {
                   <p className="text-sm text-muted-foreground">No tests match these filters.</p>
                 ) : (
                   filtered.map((test) => (
-                    <button
+                    <Link
                       key={test.id}
-                      type="button"
-                      onClick={() => setSelectedId(test.id)}
+                      href={queryHref(pathname, searchParams, { view: "list", test: test.id })}
+                      data-testid={`catalog-test-${test.id}`}
                       className={`block w-full rounded-lg border px-3 py-2 text-left text-sm hover:bg-muted ${
                         selected?.id === test.id ? "border-primary bg-muted" : "border-transparent"
                       }`}
                     >
                       <div className="font-medium">{test.name}</div>
                       <div className="font-mono text-xs text-muted-foreground">{test.id}</div>
-                    </button>
+                    </Link>
                   ))
                 )}
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>{selected?.name || "Select a test"}</CardTitle>
+                <CardTitle data-testid="catalog-detail-title">
+                  {selected?.name || "Select a test"}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
                 {selected ? (

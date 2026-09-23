@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { use, useState } from "react";
 import { PageHeader } from "@/components/page-header";
+import { LinkButton } from "@/components/link-button";
 import { ResultPanel } from "@/components/result-panel";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -21,9 +21,9 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
     return (
       <div>
         <PageHeader title="Mission not found" />
-        <Button variant="outline" render={<Link href="/missions" />}>
+        <LinkButton href="/missions" variant="outline">
           Back to missions
-        </Button>
+        </LinkButton>
       </div>
     );
   }
@@ -42,9 +42,9 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
         title={mission.name}
         description={mission.description}
         actions={
-          <Button variant="outline" render={<Link href="/missions" />}>
+          <LinkButton href="/missions" variant="outline">
             All missions
-          </Button>
+          </LinkButton>
         }
       />
 
@@ -54,9 +54,9 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
             <p className="text-sm text-muted-foreground">
               Create a test run first so mission steps can be scored against a software version.
             </p>
-            <Button className="mt-4" render={<Link href="/runs/new" />}>
+            <LinkButton href="/runs/new" className="mt-4">
               New test run
-            </Button>
+            </LinkButton>
           </CardContent>
         </Card>
       ) : (

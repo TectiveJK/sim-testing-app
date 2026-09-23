@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+import { LinkButton } from "@/components/link-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
@@ -20,10 +20,10 @@ export default function RunsPage() {
         title="Test runs"
         description="Create a new run after each SkyCommand / SIM or drone software release. The catalog is copied in automatically so you do not rebuild the suite."
         actions={
-          <Button render={<Link href="/runs/new" />}>
+          <LinkButton href="/runs/new">
             <Plus />
             New test run
-          </Button>
+          </LinkButton>
         }
       />
 
@@ -34,9 +34,9 @@ export default function RunsPage() {
               No test runs yet. Start one to begin scoring the 100 transition tests against a software
               version.
             </p>
-            <Button className="mt-4" render={<Link href="/runs/new" />}>
+            <LinkButton href="/runs/new" className="mt-4">
               Create test run
-            </Button>
+            </LinkButton>
           </CardContent>
         </Card>
       ) : (

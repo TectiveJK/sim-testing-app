@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { use, useMemo, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, use, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Download, Flag } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { LinkButton } from "@/components/link-button";
 import { NativeSelect } from "@/components/native-select";
 import { ResultPanel } from "@/components/result-panel";
 import { StatusBadge } from "@/components/status-badge";
@@ -13,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ViewPanel, ViewTabs } from "@/components/simple-tabs";
+import { queryHref, ViewPanel, ViewTabs } from "@/components/simple-tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
@@ -21,15 +23,25 @@ import { formatDateTime } from "@/lib/format";
 import { TEST_STATUSES, type TestStatus } from "@/lib/types";
 
 export default function RunDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={<p className="text-sm text-muted-foreground">Loading test run…</p>}>
+      <RunDetailInner params={params} />
+    </Suspense>
+  );
+}
+
+function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { store, catalog, updateRun } = useAppData();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view") || "execute";
+  const selectedId = searchParams.get("test");
   const run = store.runs.find((item) => item.id === id);
   const [query, setQuery] = useState("");
   const [state, setState] = useState("all");
   const [command, setCommand] = useState("all");
   const [status, setStatus] = useState<"all" | TestStatus>("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [view, setView] = useState("execute");
 
   const results = useMemo(
     () => store.results.filter((result) => result.testRunId === id),
@@ -63,9 +75,9 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
     return (
       <div>
         <PageHeader title="Test run not found" />
-        <Button variant="outline" render={<Link href="/runs" />}>
+        <LinkButton href="/runs" variant="outline">
           Back to runs
-        </Button>
+        </LinkButton>
       </div>
     );
   }
@@ -166,11 +178,22 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
 
       <ViewTabs
         value={view}
-        onChange={setView}
         items={[
-          { value: "execute", label: "Execute" },
-          { value: "matrix", label: "Matrix" },
-          { value: "setup", label: "Setup" },
+          {
+            value: "execute",
+            label: "Execute",
+            href: queryHref(pathname, searchParams, { view: "execute" }),
+          },
+          {
+            value: "matrix",
+            label: "Matrix",
+            href: queryHref(pathname, searchParams, { view: "matrix" }),
+          },
+          {
+            value: "setup",
+            label: "Setup",
+            href: queryHref(pathname, searchParams, { view: "setup" }),
+          },
         ]}
       />
 
@@ -222,10 +245,10 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
                   filtered.map((test) => {
                     const result = byTestId.get(test.id);
                     return (
-                      <button
+                      <Link
                         key={test.id}
-                        type="button"
-                        onClick={() => setSelectedId(test.id)}
+                        href={queryHref(pathname, searchParams, { view: "execute", test: test.id })}
+                        data-testid={`run-test-${test.id}`}
                         className={`flex w-full items-start justify-between gap-2 rounded-lg border px-3 py-2 text-left text-sm hover:bg-muted ${
                           selected?.id === test.id ? "border-primary bg-muted" : "border-transparent"
                         }`}
@@ -235,7 +258,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
                           <span className="font-mono text-xs text-muted-foreground">{test.id}</span>
                         </span>
                         {result ? <StatusBadge status={result.status} short /> : null}
-                      </button>
+                      </Link>
                     );
                   })
                 )}
@@ -268,8 +291,10 @@ export default function RunDetailPage({ params }: { params: Promise<{ id: string
             resultsByTestId={byTestId}
             selectedId={selected?.id}
             onSelect={(test) => {
-              setSelectedId(test.id);
-              setView("execute");
+              window.location.href = queryHref(pathname, searchParams, {
+                view: "execute",
+                test: test.id,
+              });
             }}
           />
       </ViewPanel>

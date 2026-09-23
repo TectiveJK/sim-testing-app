@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
+import { LinkButton } from "@/components/link-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useAppData } from "@/components/data-provider";
 
 export default function MissionsPage() {
@@ -46,9 +45,9 @@ export default function MissionsPage() {
                         );
                       })}
                     </ol>
-                    <Button variant="outline" size="sm" render={<Link href={`/missions/${mission.id}`} />}>
+                    <LinkButton href={`/missions/${mission.id}`} variant="outline" size="sm">
                       Open mission
-                    </Button>
+                    </LinkButton>
                   </CardContent>
                 </Card>
               ))}
