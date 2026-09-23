@@ -20,6 +20,8 @@ For every test the tester can record:
 
 The app keeps a history of previous executions so a function that passed on one release can be compared with the same function after a later release. For example, Return to Launch after GCS connection loss may pass on SkyCommand 1.2.0 / Drone 3.4.1 and fail on SkyCommand 1.3.0 / Drone 3.4.2.
 
+After some or all tests in a run have been scored, the tester can use **Export PDF** to download a shareable report for other testers or reviewers. The PDF includes software versions, `.deb` artifacts, pass/fail counts, recorded results with notes, and the tests that are still open.
+
 It also stores the last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
 
 - autonomy-node_1.0.0+12a9d76-b2_amd64.deb
