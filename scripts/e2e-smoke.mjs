@@ -82,7 +82,11 @@ try {
   await page.waitForSelector(`[data-testid="delete-run-${runId}"]`);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByTestId(`delete-run-${runId}`).click();
-  await page.waitForURL(/\/runs(?:\?|$)/, { timeout: 15000 });
+  await page.waitForURL(/\/runs(?:\/)?(?:\?|$)/, { timeout: 15000 });
+  await page.waitForSelector(`[data-testid="delete-run-${runId}"]`, {
+    state: "detached",
+    timeout: 15000,
+  });
   const leftover = await page.getByTestId(`delete-run-${runId}`).count();
   assert(leftover === 0, "Deleted run is still listed");
 } catch (error) {

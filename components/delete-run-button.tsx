@@ -2,10 +2,10 @@
 
 import { Trash2 } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { buttonVariants } from "@/components/ui/button";
 import { useAppData } from "@/components/data-provider";
+import { appPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export function DeleteRunButton({
@@ -13,7 +13,7 @@ export function DeleteRunButton({
   runName,
   size = "sm",
   testId,
-  redirectTo,
+  redirectTo = "/runs",
 }: {
   runId: string;
   runName: string;
@@ -21,7 +21,6 @@ export function DeleteRunButton({
   redirectTo?: string;
 } & Pick<VariantProps<typeof buttonVariants>, "size">) {
   const { deleteRun } = useAppData();
-  const router = useRouter();
 
   return (
     <button
@@ -34,7 +33,7 @@ export function DeleteRunButton({
         }
         try {
           await deleteRun(runId);
-          if (redirectTo) router.push(redirectTo);
+          window.location.assign(appPath(redirectTo));
         } catch (error) {
           toast.error(error instanceof Error ? error.message : "Could not delete run");
         }
