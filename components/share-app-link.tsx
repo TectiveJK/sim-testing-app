@@ -87,7 +87,7 @@ export function ShareAppLink({
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        This address stays the same. Source code is at {SHARE_URL}.
+        Bookmark this address. It is the app itself and does not expire. Source code is at {SHARE_URL}.
       </p>
     </div>
   );

@@ -60,6 +60,7 @@ export interface Attachment {
   mimeType: string;
   size: number;
   uploadedAt: string;
+  dataUrl?: string;
 }
 
 export interface TestResult {

@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   const status = form.get("status") ? (String(form.get("status")) as TestStatus) : undefined;
   const notes = form.has("notes") ? String(form.get("notes") || "") : undefined;
   const tester = form.has("tester") ? String(form.get("tester") || "") : undefined;
-  const next = String(form.get("next") || `/runs/${testRunId}?test=${testCaseId}&view=execute`);
+  const next = String(form.get("next") || `/run?id=${testRunId}&test=${testCaseId}&view=execute`);
   await saveResult({ testRunId, testCaseId, status, notes, tester });
   return Response.redirect(new URL(next, request.url), 303);
 }

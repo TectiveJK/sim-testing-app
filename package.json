@@ -11,7 +11,8 @@
     "setup": "bash scripts/install-desktop-icon.sh",
     "server": "bash scripts/sim-flight-testing-server.sh",
     "public-link": "bash scripts/keep-public-link.sh",
-    "smoke": "node scripts/e2e-smoke.mjs"
+    "smoke": "node scripts/e2e-smoke.mjs",
+    "build:pages": "bash scripts/build-pages.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

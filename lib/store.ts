@@ -1,22 +1,20 @@
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { DEFAULT_ARTIFACTS } from "@/lib/default-artifacts";
-import { mergeCatalog } from "@/lib/catalog";
-import type { AppStore, DebArtifact, TestCase, TestResult, TestRun } from "@/lib/types";
+import {
+  allTests,
+  createResultsForRun,
+  emptyStore,
+  nextRunNumber,
+  normalizeStore,
+  rememberTester,
+  removeRun,
+  snapshotArtifacts,
+} from "@/lib/store-logic";
+import type { AppStore, TestRun } from "@/lib/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const STORE_PATH = path.join(DATA_DIR, "store.json");
 const ATTACH_DIR = path.join(DATA_DIR, "attachments");
-
-function emptyStore(): AppStore {
-  return {
-    artifacts: structuredClone(DEFAULT_ARTIFACTS),
-    testers: [],
-    runs: [],
-    results: [],
-    customTests: [],
-  };
-}
 
 let writeChain = Promise.resolve();
 
@@ -32,18 +30,6 @@ function withLock<T>(fn: () => Promise<T>): Promise<T> {
 async function ensureDirs() {
   await mkdir(DATA_DIR, { recursive: true });
   await mkdir(ATTACH_DIR, { recursive: true });
-}
-
-function normalizeStore(raw: Partial<AppStore> | null): AppStore {
-  const base = emptyStore();
-  if (!raw) return base;
-  return {
-    artifacts: Array.isArray(raw.artifacts) && raw.artifacts.length > 0 ? raw.artifacts : base.artifacts,
-    testers: Array.isArray(raw.testers) ? raw.testers : [],
-    runs: Array.isArray(raw.runs) ? raw.runs : [],
-    results: Array.isArray(raw.results) ? raw.results : [],
-    customTests: Array.isArray(raw.customTests) ? raw.customTests : [],
-  };
 }
 
 export async function readStore(): Promise<AppStore> {
@@ -72,47 +58,6 @@ export async function updateStore(mutator: (store: AppStore) => void | AppStore)
     await persist(next);
     return next;
   });
-}
-
-export function allTests(store: AppStore): TestCase[] {
-  return mergeCatalog(store.customTests);
-}
-
-export function resultsForRun(store: AppStore, runId: string) {
-  return store.results.filter((result) => result.testRunId === runId);
-}
-
-export function nextRunNumber(store: AppStore) {
-  return store.runs.reduce((max, run) => Math.max(max, run.number), 0) + 1;
-}
-
-export function snapshotArtifacts(artifacts: DebArtifact[]) {
-  return artifacts.map((artifact) => ({ ...artifact }));
-}
-
-export function createResultsForRun(runId: string, tests: TestCase[]): TestResult[] {
-  return tests.map((test) => ({
-    id: crypto.randomUUID(),
-    testRunId: runId,
-    testCaseId: test.id,
-    status: "not_tested",
-    notes: "",
-    attachments: [],
-  }));
-}
-
-export function rememberTester(store: AppStore, tester: string) {
-  const name = tester.trim();
-  if (!name) return;
-  store.testers = [name, ...store.testers.filter((item) => item !== name)].slice(0, 20);
-}
-
-export function removeRun(store: AppStore, runId: string) {
-  const results = store.results.filter((result) => result.testRunId === runId);
-  const attachmentIds = results.flatMap((result) => result.attachments.map((item) => item.id));
-  store.runs = store.runs.filter((run) => run.id !== runId);
-  store.results = store.results.filter((result) => result.testRunId !== runId);
-  return attachmentIds;
 }
 
 export async function deleteAttachmentFiles(ids: string[]) {
@@ -145,4 +90,16 @@ export async function getRunOrThrow(runId: string) {
   return { store, run };
 }
 
-export { DATA_DIR, STORE_PATH, ATTACH_DIR };
+export {
+  allTests,
+  createResultsForRun,
+  emptyStore,
+  nextRunNumber,
+  normalizeStore,
+  rememberTester,
+  removeRun,
+  snapshotArtifacts,
+  DATA_DIR,
+  STORE_PATH,
+  ATTACH_DIR,
+};

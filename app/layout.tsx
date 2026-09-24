@@ -5,10 +5,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { AppShell } from "@/components/app-shell";
 import { DataProvider } from "@/components/data-provider";
 import { ThemeProvider } from "next-themes";
-import { catalogPayload } from "@/lib/catalog";
-import { BUILTIN_MISSIONS } from "@/lib/missions";
-import { COMMANDS } from "@/lib/types";
-import { readStore } from "@/lib/store";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,12 +23,7 @@ export const metadata: Metadata = {
     "Checklist and result-recording app for SIM flight tests. SkyCommand stays separate.",
 };
 
-export const dynamic = "force-dynamic";
-
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const store = await readStore();
-  const { tests, states, phasesByState } = catalogPayload(store.customTests);
-
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
@@ -42,18 +33,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
         <TooltipProvider>
-          <DataProvider
-            initial={{
-              store,
-              catalog: {
-                tests,
-                missions: BUILTIN_MISSIONS,
-                states,
-                phasesByState,
-                commands: [...COMMANDS],
-              },
-            }}
-          >
+          <DataProvider>
             <AppShell>{children}</AppShell>
             <Toaster />
           </DataProvider>

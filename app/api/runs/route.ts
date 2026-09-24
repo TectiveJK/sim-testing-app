@@ -74,7 +74,7 @@ export async function POST(request: Request) {
       notes: String(form.get("notes") || ""),
       cloneFromId: String(form.get("cloneFromId") || ""),
     });
-    return Response.redirect(new URL(`/runs/${created.id}`, request.url), 303);
+    return Response.redirect(new URL(`/run?id=${created.id}`, request.url), 303);
   }
 
   const body = (await request.json()) as {

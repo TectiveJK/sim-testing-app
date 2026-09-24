@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, use, useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Download, FileDown, Flag } from "lucide-react";
+import { Download, Flag } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { DeleteRunButton } from "@/components/delete-run-button";
-import { DownloadLink } from "@/components/download-link";
+import { ExportPdfButton } from "@/components/export-pdf-button";
 import { LinkButton } from "@/components/link-button";
 import { NativeSelect } from "@/components/native-select";
 import { ResultPanel } from "@/components/result-panel";
@@ -22,21 +22,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
 import { formatDateTime } from "@/lib/format";
+import { appPath } from "@/lib/routes";
 import { TEST_STATUSES, type TestStatus } from "@/lib/types";
 
-export default function RunDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function RunDetailPage() {
   return (
     <Suspense fallback={<p className="text-sm text-muted-foreground">Loading test run…</p>}>
-      <RunDetailInner params={params} />
+      <RunDetailInner />
     </Suspense>
   );
 }
 
-function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function RunDetailInner() {
   const { store, catalog, updateRun } = useAppData();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const id = searchParams.get("id") || "";
   const view = searchParams.get("view") || "execute";
   const selectedId = searchParams.get("test");
   const run = store.runs.find((item) => item.id === id);
@@ -75,7 +76,7 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
   const selectedIndex = selected ? filtered.findIndex((test) => test.id === selected.id) : -1;
   const nextTest = selectedIndex >= 0 ? filtered[selectedIndex + 1] : undefined;
 
-  if (!run) {
+  if (!id || !run) {
     return (
       <div>
         <PageHeader title="Test run not found" />
@@ -144,13 +145,14 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
         description={`Checklist run · ${formatDateTime(run.startedAt)} · Software ${run.skyCommandVersion || "—"} / ${run.droneVersion || "—"} · ${run.tester || "No tester"}`}
         actions={
           <>
-            {recorded > 0 ? (
-              <DownloadLink href={`/api/runs/${run.id}/pdf`} testId="export-pdf">
-                <FileDown />
-                Export PDF
-              </DownloadLink>
-            ) : null}
-            <DeleteRunButton runId={run.id} runName={run.name} size="default" testId="delete-run" />
+            {recorded > 0 ? <ExportPdfButton runId={run.id} testId="export-pdf" /> : null}
+            <DeleteRunButton
+              runId={run.id}
+              runName={run.name}
+              size="default"
+              testId="delete-run"
+              redirectTo="/runs"
+            />
             <Button variant="outline" onClick={exportCsv}>
               <Download />
               CSV
@@ -312,10 +314,10 @@ function RunDetailInner({ params }: { params: Promise<{ id: string }> }) {
             resultsByTestId={byTestId}
             selectedId={selected?.id}
             onSelect={(test) => {
-              window.location.href = queryHref(pathname, searchParams, {
+              window.location.href = appPath(queryHref(pathname, searchParams, {
                 view: "execute",
                 test: test.id,
-              });
+              }));
             }}
           />
       </ViewPanel>

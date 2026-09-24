@@ -1,10 +1,11 @@
 "use client";
 
-import { AlertTriangle, ArrowRight, CheckCircle2, FileDown, Plus } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { DownloadLink } from "@/components/download-link";
+import { ExportPdfButton } from "@/components/export-pdf-button";
 import { LinkButton } from "@/components/link-button";
+import { runHref } from "@/lib/routes";
 import { ShareAppLink } from "@/components/share-app-link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
@@ -40,7 +41,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Share this app</CardTitle>
           <CardDescription>
-            Use the permanent link below. It stays the same and opens the live checklist.
+            Send this address to other testers. It is the app itself and does not expire.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -105,12 +106,9 @@ export default function DashboardPage() {
             {latest ? (
               <div className="flex flex-wrap gap-2">
                 {latestCounts && latestCounts.total - latestCounts.not_tested > 0 ? (
-                  <DownloadLink href={`/api/runs/${latest.id}/pdf`} size="sm" testId="export-pdf-latest">
-                    <FileDown />
-                    Export PDF
-                  </DownloadLink>
+                  <ExportPdfButton runId={latest.id} size="sm" testId="export-pdf-latest" />
                 ) : null}
-                <LinkButton href={`/runs/${latest.id}`} variant="outline" size="sm">
+                <LinkButton href={runHref(latest.id)} variant="outline" size="sm">
                   Continue
                   <ArrowRight />
                 </LinkButton>

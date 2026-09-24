@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import { allTests } from "@/lib/store";
+import { allTests } from "@/lib/store-logic";
 import { countResults, passRate } from "@/lib/client-types";
 import { formatDateTime } from "@/lib/format";
 import { STATUS_LABELS } from "@/lib/status";

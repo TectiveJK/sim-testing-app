@@ -14,6 +14,7 @@ import {
   Route,
 } from "lucide-react";
 import { useState } from "react";
+import { useAppData } from "@/components/data-provider";
 import { ShareAppLink } from "@/components/share-app-link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -63,6 +64,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const { ready } = useAppData();
 
   return (
     <div className="flex min-h-full">
@@ -107,7 +109,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </SheetContent>
         </Sheet>
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+          {ready ? children : <p className="text-sm text-muted-foreground">Loading checklist…</p>}
+        </main>
       </div>
     </div>
   );

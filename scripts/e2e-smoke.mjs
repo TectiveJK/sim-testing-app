@@ -42,7 +42,7 @@ try {
   await page.getByTestId("drone-version").fill("3.5.0");
   await page.getByTestId("tester").fill("Short Retest");
   await page.getByTestId("start-test-run").click();
-  await page.waitForURL(/\/runs\/[0-9a-f-]+/, { timeout: 15000 });
+  await page.waitForURL(/\/run\?id=[0-9a-f-]+/, { timeout: 15000 });
   await page.waitForSelector('[data-testid="run-test-corridor-take-off-complete"]');
 
   const initial = await page.getByTestId("result-title").innerText();
@@ -57,16 +57,17 @@ try {
   await page.waitForTimeout(300);
 
   await page.waitForSelector('[data-testid="export-pdf"]');
-  const pdfHref = await page.getByTestId("export-pdf").getAttribute("href");
-  assert(pdfHref, "Export PDF link has no href");
-  const pdfResponse = await page.request.get(new URL(pdfHref, base).toString());
-  assert(pdfResponse.ok(), `PDF download failed (${pdfResponse.status()})`);
-  assert(
-    (pdfResponse.headers()["content-type"] || "").includes("pdf"),
-    `Expected application/pdf, got ${pdfResponse.headers()["content-type"]}`,
-  );
-  const pdfBody = await pdfResponse.body();
-  assert(pdfBody.subarray(0, 4).toString() === "%PDF", "Export did not return a PDF");
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByTestId("export-pdf").click(),
+  ]);
+  const pdfName = download.suggestedFilename();
+  assert(pdfName.endsWith(".pdf"), `Expected a PDF download, got ${pdfName}`);
+  const pdfPath = await download.path();
+  assert(pdfPath, "PDF download has no file path");
+  const { readFileSync } = await import("node:fs");
+  const header = readFileSync(pdfPath).subarray(0, 4).toString();
+  assert(header === "%PDF", `Export did not return a PDF (${header})`);
 
   await page.getByTestId("tab-matrix").click();
   await page.waitForURL(/view=matrix/);
@@ -75,7 +76,7 @@ try {
   assert(tables > 0, "Matrix tab did not show a table");
 
   const runUrl = page.url();
-  const runId = runUrl.match(/\/runs\/([0-9a-f-]+)/)?.[1];
+  const runId = new URL(runUrl).searchParams.get("id");
   assert(runId, "Could not read created run id");
   await page.goto(`${base}/runs`, { waitUntil: "networkidle" });
   await page.waitForSelector(`[data-testid="delete-run-${runId}"]`);

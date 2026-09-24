@@ -12,9 +12,11 @@ import { NativeSelect } from "@/components/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { runTitle } from "@/lib/format";
+import { appPath, runHref } from "@/lib/routes";
+import { toast } from "sonner";
 
 export default function NewRunPage() {
-  const { store } = useAppData();
+  const { store, createRun } = useAppData();
   const nextNumber = store.runs.reduce((max, run) => Math.max(max, run.number), 0) + 1;
 
   return (
@@ -25,7 +27,26 @@ export default function NewRunPage() {
         description="This starts a recording session for the catalog. You will still fly every test yourself in SkyCommand. Versions and .deb names are only labels for later comparison."
       />
 
-      <form action="/api/runs" method="post" className="space-y-6">
+      <form
+        className="space-y-6"
+        onSubmit={async (event) => {
+          event.preventDefault();
+          const form = new FormData(event.currentTarget);
+          try {
+            const id = await createRun({
+              name: String(form.get("name") || ""),
+              skyCommandVersion: String(form.get("skyCommandVersion") || ""),
+              droneVersion: String(form.get("droneVersion") || ""),
+              tester: String(form.get("tester") || ""),
+              notes: String(form.get("notes") || ""),
+              cloneFromId: String(form.get("cloneFromId") || "") || undefined,
+            });
+            window.location.assign(appPath(runHref(id)));
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Could not create test run");
+          }
+        }}
+      >
         <Card>
           <CardHeader>
             <CardTitle>Software versions</CardTitle>

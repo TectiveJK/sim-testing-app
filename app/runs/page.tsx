@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { FileDown, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { DeleteRunButton } from "@/components/delete-run-button";
-import { DownloadLink } from "@/components/download-link";
+import { ExportPdfButton } from "@/components/export-pdf-button";
 import { LinkButton } from "@/components/link-button";
+import { runHref } from "@/lib/routes";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
@@ -53,7 +54,7 @@ export default function RunsPage() {
                 className="rounded-xl border bg-card px-4 py-4 transition-colors hover:bg-muted/40"
               >
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                  <Link href={`/runs/${run.id}`} className="min-w-0 flex-1">
+                  <Link href={runHref(run.id)} className="min-w-0 flex-1">
                     <div className="text-sm font-semibold">{run.name}</div>
                     <div className="mt-1 text-sm text-muted-foreground">
                       SkyCommand {run.skyCommandVersion || "—"} · Drone {run.droneVersion || "—"} ·{" "}
@@ -72,14 +73,7 @@ export default function RunsPage() {
                     <StatusBadge status="not_tested" short />
                     <span>{counts.not_tested}</span>
                     {recorded > 0 ? (
-                      <DownloadLink
-                        href={`/api/runs/${run.id}/pdf`}
-                        size="sm"
-                        testId={`export-pdf-${run.id}`}
-                      >
-                        <FileDown />
-                        Export PDF
-                      </DownloadLink>
+                      <ExportPdfButton runId={run.id} size="sm" testId={`export-pdf-${run.id}`} />
                     ) : null}
                     <DeleteRunButton
                       runId={run.id}

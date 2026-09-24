@@ -10,6 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAppData } from "@/components/data-provider";
 import { formatBytes, formatDateTime } from "@/lib/format";
+import { appPath, attachmentHref, runHref } from "@/lib/routes";
 import { QUICK_STATUSES, STATUS_LABELS, scoreButtonClass } from "@/lib/status";
 import type { TestCase, TestResult } from "@/lib/types";
 
@@ -28,8 +29,8 @@ export function ResultPanel({
   compact?: boolean;
   nextHref?: string;
 }) {
-  const { uploadAttachment, deleteAttachment } = useAppData();
-  const stayHref = `/runs/${runId}?view=execute&test=${encodeURIComponent(test.id)}`;
+  const { saveResult, uploadAttachment, deleteAttachment } = useAppData();
+  const stayHref = runHref(runId, { view: "execute", test: test.id });
   const afterScoreHref = nextHref || stayHref;
 
   return (
@@ -71,12 +72,24 @@ export function ResultPanel({
         <Label className="mb-2 block">Record result</Label>
         <div className="flex flex-wrap gap-2">
           {QUICK_STATUSES.map((status) => (
-            <form key={status} action="/api/results" method="post" className="min-w-0 flex-1">
-              <input type="hidden" name="testRunId" value={runId} />
-              <input type="hidden" name="testCaseId" value={test.id} />
-              <input type="hidden" name="status" value={status} />
-              {tester ? <input type="hidden" name="tester" value={tester} /> : null}
-              <input type="hidden" name="next" value={status === "not_tested" ? stayHref : afterScoreHref} />
+            <form
+              key={status}
+              className="min-w-0 flex-1"
+              onSubmit={async (event) => {
+                event.preventDefault();
+                try {
+                  await saveResult({
+                    testRunId: runId,
+                    testCaseId: test.id,
+                    status,
+                    tester,
+                  });
+                  window.location.assign(appPath(status === "not_tested" ? stayHref : afterScoreHref));
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : "Could not save result");
+                }
+              }}
+            >
               <button type="submit" className={cn("w-full", scoreButtonClass(status, result.status === status))}>
                 {STATUS_LABELS[status]}
               </button>
@@ -91,11 +104,24 @@ export function ResultPanel({
         ) : null}
       </div>
 
-      <form action="/api/results" method="post" className="space-y-2">
-        <input type="hidden" name="testRunId" value={runId} />
-        <input type="hidden" name="testCaseId" value={test.id} />
-        {tester ? <input type="hidden" name="tester" value={tester} /> : null}
-        <input type="hidden" name="next" value={stayHref} />
+      <form
+        className="space-y-2"
+        onSubmit={async (event) => {
+          event.preventDefault();
+          const form = new FormData(event.currentTarget);
+          try {
+            await saveResult({
+              testRunId: runId,
+              testCaseId: test.id,
+              notes: String(form.get("notes") || ""),
+              tester,
+            });
+            toast.success("Notes saved");
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Could not save notes");
+          }
+        }}
+      >
         <Label htmlFor={`notes-${result.id}`}>Notes / Observations</Label>
         <Textarea
           id={`notes-${result.id}`}
@@ -164,7 +190,7 @@ export function ResultPanel({
                   className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2"
                 >
                   <a
-                    href={`/api/attachments?id=${attachment.id}`}
+                    href={attachmentHref(attachment.id, attachment.dataUrl)}
                     className="min-w-0 truncate text-sm hover:underline"
                   >
                     {attachment.originalName}
