@@ -1,12 +1,14 @@
 # sim-testing-app
 
-## Share this app
+## Open the app
 
-Send this GitHub link to other testers. This is the link that works for other people:
+Use this address. It does not expire:
 
-**https://github.com/TectiveJK/sim-testing-app**
+**https://tectivejk.github.io/sim-testing-app/**
 
-Do **not** send `http://127.0.0.1:43147`. That address is only the lab on *this* computer. It will fail in another browser or on another laptop.
+That page always forwards to the running checklist. Bookmark it and send it to other testers.
+
+The source repository is https://github.com/TectiveJK/sim-testing-app.
 
 The repository is public. Anyone with the GitHub link can install it once on their Ubuntu machine. After that the lab starts by itself at login, and **http://127.0.0.1:43147** works without typing a command:
 
@@ -76,7 +78,8 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
-- Share link for other testers: https://github.com/TectiveJK/sim-testing-app
+- Permanent open link: https://tectivejk.github.io/sim-testing-app/
+- Source repository: https://github.com/TectiveJK/sim-testing-app
 - Starts at login after one-time setup, so http://127.0.0.1:43147 works without a command
 - Local storage on the tester’s Ubuntu machine
 

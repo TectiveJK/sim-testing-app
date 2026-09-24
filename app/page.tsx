@@ -40,8 +40,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Share this app</CardTitle>
           <CardDescription>
-            Send the GitHub link to other testers. http://127.0.0.1:43147 only opens the lab on this
-            computer after the server is running.
+            Use the permanent link below. It stays the same and opens the live checklist.
           </CardDescription>
         </CardHeader>
         <CardContent>

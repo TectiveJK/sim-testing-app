@@ -4,7 +4,7 @@ import { Check, Copy, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SHARE_URL } from "@/lib/share";
+import { OPEN_APP_URL, SHARE_URL } from "@/lib/share";
 
 export function ShareAppLink({
   compact = false,
@@ -17,11 +17,11 @@ export function ShareAppLink({
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(SHARE_URL);
+      await navigator.clipboard.writeText(OPEN_APP_URL);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt("Copy this link and send it to other testers:", SHARE_URL);
+      window.prompt("Copy this link:", OPEN_APP_URL);
     }
   }
 
@@ -29,14 +29,14 @@ export function ShareAppLink({
     return (
       <div className={cn("space-y-2", className)}>
         <a
-          href={SHARE_URL}
+          href={OPEN_APP_URL}
           target="_blank"
           rel="noreferrer"
           data-testid="share-app-link"
           className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-full")}
         >
           <ExternalLink />
-          Share app
+          Open app
         </a>
         <button
           type="button"
@@ -54,13 +54,13 @@ export function ShareAppLink({
   return (
     <div className={cn("space-y-2", className)}>
       <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground" htmlFor="share-app-url">
-        Share this app
+        Open this app
       </label>
       <div className="flex flex-col gap-2 sm:flex-row">
         <input
           id="share-app-url"
           readOnly
-          value={SHARE_URL}
+          value={OPEN_APP_URL}
           onFocus={(event) => event.currentTarget.select()}
           className="h-8 min-w-0 flex-1 rounded-lg border bg-background px-2.5 font-mono text-xs"
         />
@@ -75,7 +75,7 @@ export function ShareAppLink({
             {copied ? "Copied" : "Copy link"}
           </button>
           <a
-            href={SHARE_URL}
+            href={OPEN_APP_URL}
             target="_blank"
             rel="noreferrer"
             data-testid="share-app-link"
@@ -87,8 +87,7 @@ export function ShareAppLink({
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Send this GitHub link, not http://127.0.0.1:43147. That local address only works on the
-        computer where the app is already running.
+        This address stays the same. Source code is at {SHARE_URL}.
       </p>
     </div>
   );
