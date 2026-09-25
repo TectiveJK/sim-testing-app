@@ -20,7 +20,7 @@ function step(state: string, phase: string, command: string, instruction: string
 export const BUILTIN_MISSIONS: Mission[] = [
   {
     id: "corridor-complete-flight",
-    name: "Corridor mission — complete",
+    name: "Corridor mission",
     category: "Corridor Missions",
     description:
       "Fly a full corridor mission from take-off through hive landing and confirm each segment completes.",
@@ -34,7 +34,7 @@ export const BUILTIN_MISSIONS: Mission[] = [
   },
   {
     id: "viewpoint-swap-complete",
-    name: "Viewpoint swap to hive — complete",
+    name: "Viewpoint swap to hive",
     category: "Autonomous Flight",
     description:
       "From a viewpoint swap, send the drone back to the hive and confirm the action completes.",
@@ -43,7 +43,7 @@ export const BUILTIN_MISSIONS: Mission[] = [
         "Viewpoint",
         "To hive from swap",
         "Complete",
-        "From the viewpoint swap state, command complete and verify the drone returns to the hive.",
+        "From the viewpoint swap state, send the drone back to the hive and verify it returns.",
       ),
     ],
   },

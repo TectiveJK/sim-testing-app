@@ -165,14 +165,19 @@ function procedure(state: string, phase: string, command: string) {
   ].join(" ");
 }
 
+function testName(currentState: string, phase: string, command: string) {
+  if (command === "Complete") {
+    return phase ? `${currentState} / ${phase}` : currentState;
+  }
+  return phase ? `${currentState} / ${phase} → ${command}` : `${currentState} → ${command}`;
+}
+
 export const BUILTIN_TESTS: TestCase[] = RAW_TESTS.map(([currentState, phase, command]) => ({
   id: testId(currentState, phase, command),
   currentState,
   phase,
   command,
-  name: phase
-    ? `${currentState} / ${phase} → ${command}`
-    : `${currentState} → ${command}`,
+  name: testName(currentState, phase, command),
   description: describe(currentState, phase, command),
   expectedBehavior: expected(currentState, phase, command),
   procedure: procedure(currentState, phase, command),
