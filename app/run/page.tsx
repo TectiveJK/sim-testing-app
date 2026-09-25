@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Download, Flag } from "lucide-react";
@@ -22,7 +22,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
 import { countResults, passRate } from "@/lib/client-types";
 import { formatDateTime } from "@/lib/format";
-import { appPath } from "@/lib/routes";
 import { TEST_STATUSES, type TestStatus } from "@/lib/types";
 
 export default function RunDetailPage() {
@@ -36,6 +35,7 @@ export default function RunDetailPage() {
 function RunDetailInner() {
   const { store, catalog, updateRun } = useAppData();
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id") || "";
   const view = searchParams.get("view") || "execute";
@@ -314,7 +314,7 @@ function RunDetailInner() {
             resultsByTestId={byTestId}
             selectedId={selected?.id}
             onSelect={(test) => {
-              window.location.href = appPath(queryHref(pathname, searchParams, {
+              router.push(queryHref(pathname, searchParams, {
                 view: "execute",
                 test: test.id,
               }));

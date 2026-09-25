@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/page-header";
@@ -28,6 +28,7 @@ export default function CatalogPage() {
 function CatalogInner() {
   const { catalog, addTest } = useAppData();
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const view = searchParams.get("view") === "list" ? "list" : "matrix";
   const selectedId = searchParams.get("test");
@@ -110,10 +111,10 @@ function CatalogInner() {
             phasesByState={catalog.phasesByState}
             selectedId={selected?.id}
             onSelect={(test) => {
-              window.location.href = queryHref(pathname, searchParams, {
+              router.push(queryHref(pathname, searchParams, {
                 view: "list",
                 test: test.id,
-              });
+              }));
             }}
           />
           <p className="mt-2 text-xs text-muted-foreground">

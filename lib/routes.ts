@@ -2,9 +2,19 @@ export function appBasePath() {
   return process.env.NEXT_PUBLIC_BASE_PATH || "";
 }
 
+function withDirectorySlash(path: string) {
+  const match = path.match(/^([^?#]*)(.*)$/);
+  if (!match) return path;
+  const [, pathname, rest] = match;
+  if (!pathname.endsWith("/")) return `${pathname}/${rest}`;
+  return path;
+}
+
 export function appPath(path: string) {
   if (!path.startsWith("/") || path.startsWith("//")) return path;
-  return `${appBasePath()}${path}`;
+  const prefixed = `${appBasePath()}${path}`;
+  if (!appBasePath()) return prefixed;
+  return withDirectorySlash(prefixed);
 }
 
 export function runHref(
