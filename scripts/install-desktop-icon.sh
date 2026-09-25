@@ -5,29 +5,62 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 STARTER="$ROOT/scripts/start-sim-flight-testing.sh"
 ENSURE="$ROOT/scripts/ensure-sim-flight-testing.sh"
 SERVER="$ROOT/scripts/sim-flight-testing-server.sh"
-ICON="$ROOT/packaging/sim-flight-testing.png"
-if [[ ! -f "$ICON" ]]; then
-  ICON="$ROOT/packaging/sim-flight-testing.svg"
+ICON_SRC="$ROOT/packaging/sim-flight-testing.png"
+if [[ ! -f "$ICON_SRC" ]]; then
+  ICON_SRC="$ROOT/packaging/sim-flight-testing.svg"
 fi
+
 APP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
-ICON_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/icons/hicolor/256x256/apps"
+ICON_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/icons"
 AUTOSTART_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/autostart"
 SYSTEMD_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
-DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
-FILE_NAME="sim-flight-testing.desktop"
+VISIBLE_NAME="SIM Flight Testing.desktop"
+SHORT_NAME="sim-flight-testing.desktop"
+
+chmod +x "$STARTER" "$ENSURE" "$SERVER" "$ROOT/scripts/install-desktop-icon.sh"
 
 if [[ -f "$HOME/.config/user-dirs.dirs" ]]; then
   # shellcheck disable=SC1091
   . "$HOME/.config/user-dirs.dirs"
-  if [[ -n "${XDG_DESKTOP_DIR:-}" ]]; then
-    DESKTOP_DIR="$XDG_DESKTOP_DIR"
-  fi
 fi
 
-chmod +x "$STARTER" "$ENSURE" "$SERVER" "$ROOT/scripts/install-desktop-icon.sh"
+desktop_dirs() {
+  local seen=""
+  local dir
+  local candidates=(
+    "${XDG_DESKTOP_DIR:-}"
+    "$HOME/Desktop"
+    "$HOME/Bureaublad"
+    "$HOME/Bureau"
+    "$HOME/Schreibtisch"
+    "$HOME/Escritorio"
+  )
+  for dir in "${candidates[@]}"; do
+    [[ -n "$dir" && -d "$dir" ]] || continue
+    case " $seen " in
+      *" $dir "*) continue ;;
+    esac
+    seen="$seen $dir"
+    printf '%s\n' "$dir"
+  done
+  if [[ -z "$seen" ]]; then
+    mkdir -p "$HOME/Desktop"
+    printf '%s\n' "$HOME/Desktop"
+  fi
+}
 
-escape() {
-  printf '%s' "$1" | sed 's/ /\\ /g'
+trust_launcher() {
+  local file="$1"
+  [[ -f "$file" ]] || return 0
+  chmod a+x "$file"
+  if command -v gio >/dev/null 2>&1; then
+    gio set "$file" metadata::trusted true 2>/dev/null || true
+    gio set "$file" metadata::trusted yes 2>/dev/null || true
+    gio set "$file" "metadata::trusted" true 2>/dev/null || true
+  fi
+  if command -v gvfs-set-attribute >/dev/null 2>&1; then
+    gvfs-set-attribute "$file" -t string metadata::trusted true 2>/dev/null || true
+  fi
 }
 
 write_launcher() {
@@ -37,16 +70,17 @@ write_launcher() {
 Version=1.0
 Type=Application
 Name=SIM Flight Testing
-GenericName=Flight test lab
-Comment=Flight testing and regression testing for SkyCommand / SIM and drone software
-Exec=$(escape "$STARTER")
-Icon=$ICON
+GenericName=Flight test checklist
+Comment=Open the SIM Flight Testing checklist
+Exec=/bin/bash "$STARTER"
+Path=$ROOT
+Icon=$ICON_HOME/hicolor/256x256/apps/sim-flight-testing.png
 Terminal=false
-Categories=Utility;
+Categories=Utility;Education;
 StartupNotify=true
-Keywords=drone;SIM;SkyCommand;regression;flight;
+Keywords=drone;SIM;SkyCommand;regression;flight;checklist;
 EOF
-  chmod +x "$target"
+  chmod a+x "$target"
 }
 
 write_autostart() {
@@ -56,34 +90,41 @@ write_autostart() {
 Version=1.0
 Type=Application
 Name=SIM Flight Testing
-Comment=Keep the local flight-testing lab running
-Exec=$(escape "$ENSURE")
-Icon=$ICON
+Comment=Keep the local flight-testing checklist running
+Exec=/bin/bash "$ENSURE"
+Icon=$ICON_HOME/hicolor/256x256/apps/sim-flight-testing.png
 Terminal=false
 X-GNOME-Autostart-enabled=true
 Hidden=false
 EOF
-  chmod +x "$target"
+  chmod a+x "$target"
 }
 
-mkdir -p "$APP_DIR" "$DESKTOP_DIR" "$ICON_DIR" "$AUTOSTART_DIR" "$SYSTEMD_DIR"
-cp -f "$ICON" "$ICON_DIR/sim-flight-testing.png" 2>/dev/null || cp -f "$ICON" "$ICON_DIR/sim-flight-testing.svg"
+mkdir -p "$APP_DIR" "$AUTOSTART_DIR" "$SYSTEMD_DIR"
+for size in 48 128 256 512; do
+  mkdir -p "$ICON_HOME/hicolor/${size}x${size}/apps"
+  cp -f "$ICON_SRC" "$ICON_HOME/hicolor/${size}x${size}/apps/sim-flight-testing.png"
+done
+cp -f "$ICON_SRC" "$ICON_HOME/sim-flight-testing.png"
 
-APP_FILE="$APP_DIR/$FILE_NAME"
-DESKTOP_FILE="$DESKTOP_DIR/$FILE_NAME"
-AUTOSTART_FILE="$AUTOSTART_DIR/$FILE_NAME"
+write_launcher "$APP_DIR/$SHORT_NAME"
+write_autostart "$AUTOSTART_DIR/$SHORT_NAME"
 
-write_launcher "$APP_FILE"
-write_launcher "$DESKTOP_FILE"
-write_autostart "$AUTOSTART_FILE"
-
-if command -v gio >/dev/null 2>&1; then
-  gio set "$DESKTOP_FILE" metadata::trusted true 2>/dev/null || true
-  gio set "$DESKTOP_FILE" "metadata::trusted" true 2>/dev/null || true
-fi
+CREATED=()
+while IFS= read -r dir; do
+  mkdir -p "$dir"
+  rm -f "$dir/$SHORT_NAME" "$dir/sim-flight-testing.desktop"
+  write_launcher "$dir/$VISIBLE_NAME"
+  cp -f "$ICON_SRC" "$dir/SIM Flight Testing.png"
+  trust_launcher "$dir/$VISIBLE_NAME"
+  CREATED+=("$dir/$VISIBLE_NAME")
+done < <(desktop_dirs)
 
 if command -v update-desktop-database >/dev/null 2>&1; then
   update-desktop-database "$APP_DIR" >/dev/null 2>&1 || true
+fi
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+  gtk-update-icon-cache -f "$ICON_HOME/hicolor" >/dev/null 2>&1 || true
 fi
 
 UNIT="$SYSTEMD_DIR/sim-flight-testing.service"
@@ -94,17 +135,24 @@ fi
 
 if command -v crontab >/dev/null 2>&1; then
   current="$(crontab -l 2>/dev/null || true)"
-  line="@reboot sleep 20 && $(escape "$ENSURE")"
+  line="@reboot sleep 20 && /bin/bash \"$ENSURE\""
   if ! grep -F "$ENSURE" <<<"$current" >/dev/null 2>&1; then
     { printf '%s\n' "$current"; printf '%s\n' "$line"; } | crontab - 2>/dev/null || true
   fi
 fi
 
 bash "$ENSURE" || true
+/bin/bash "$STARTER" >/dev/null 2>&1 || true
 
-echo "SIM Flight Testing will stay running on this computer."
-echo "  Desktop icon: $DESKTOP_FILE"
-echo "  Starts at login: $AUTOSTART_FILE"
 echo
-echo "After this one-time setup, open http://127.0.0.1:43147 — no command needed."
-echo "On Ubuntu, right-click the Desktop icon and choose Allow Launching if asked."
+echo "SIM Flight Testing is installed on this computer."
+echo "Look on your Desktop or Bureaublad for the gold drone icon named:"
+echo "  SIM Flight Testing"
+if ((${#CREATED[@]})); then
+  echo
+  echo "Icon files:"
+  printf '  %s\n' "${CREATED[@]}"
+fi
+echo
+echo "Double-click it. If Ubuntu asks, choose Allow Launching."
+echo "The icon starts the checklist and opens it. You do not need a web link."

@@ -1,25 +1,22 @@
 # sim-testing-app
 
-## Open the app
+## Put the icon on your Ubuntu desktop
 
-Use this address. It is the checklist itself and **does not expire**:
+The checklist opens from a **SIM Flight Testing** icon on your Desktop (or **Bureaublad**). That is the way to start it. You do not need a web link.
 
-**https://tectivejk.github.io/sim-testing-app/**
-
-Bookmark it and send it to other testers. No command is required. Results are saved in that browser.
-
-The source repository is https://github.com/TectiveJK/sim-testing-app.
-
-The repository is public. Anyone who wants a desktop copy on Ubuntu can install it once. After that the lab starts by itself at login, and **http://127.0.0.1:43147** works on that machine without typing a command:
+Run these commands in a terminal **on your Ubuntu computer** (the machine where you fly SkyCommand). If you already cloned the repo, skip clone and start at `cd`:
 
 ```bash
 git clone https://github.com/TectiveJK/sim-testing-app.git
 cd sim-testing-app
+git pull
 npm install
 npm run setup
 ```
 
-`npm run setup` is one-time. It installs the desktop icon, starts the local server, and enables start-at-login. After that, open **http://127.0.0.1:43147** or double-click **SIM Flight Testing**. Each tester keeps their own results. Use **Export PDF** to share a test-run report.
+`npm run setup` puts a gold drone icon named **SIM Flight Testing** on your Desktop and on Bureaublad, adds it to the application menu, starts the checklist, and opens it. Double-click the icon next time. If Ubuntu asks, choose **Allow Launching**.
+
+The source repository is https://github.com/TectiveJK/sim-testing-app. Each tester keeps their own results. Use **Export PDF** to share a test-run report.
 
 ## Description
 
@@ -53,7 +50,7 @@ After some or all tests in a run have been scored, the tester can use **Export P
 
 A test run that was started by mistake, or that the tester did not actually fly, can be removed with **Delete** on the Test runs page. The button sits next to Export PDF. Confirming delete removes that run and all of its results.
 
-Open the live checklist at **https://tectivejk.github.io/sim-testing-app/**. That address is permanent and hosts the app. The source repository is **https://github.com/TectiveJK/sim-testing-app**. Other testers can use the Pages link immediately, or clone the repository and run `npm run setup` once for a local Ubuntu copy.
+On Ubuntu, open the checklist from the **SIM Flight Testing** desktop icon after `npm run setup`. The source repository is **https://github.com/TectiveJK/sim-testing-app**. Other testers clone the repository and run `npm run setup` once so they get the same icon.
 
 It also stores the last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
 
@@ -78,9 +75,9 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
-- Permanent open link: https://tectivejk.github.io/sim-testing-app/
+- Visible Ubuntu desktop icon: **SIM Flight Testing** (Desktop and Bureaublad)
 - Source repository: https://github.com/TectiveJK/sim-testing-app
-- Local Ubuntu install starts at login after one-time setup, so http://127.0.0.1:43147 works without a command
+- Local Ubuntu install starts at login after one-time setup. Double-click the desktop icon.
 - Shared web copy saves results in the browser; the Ubuntu copy saves them in `data/store.json`
 
 ## Install once (Ubuntu)
@@ -98,7 +95,7 @@ That does all of this:
 - starts the lab now
 - starts it again automatically when you log in or reboot
 
-After that, do not run `npm run dev`. Just open **http://127.0.0.1:43147** or double-click the desktop icon. If Ubuntu asks, choose **Allow Launching**.
+After that, do not run `npm run dev`. Double-click **SIM Flight Testing** on the Desktop or Bureaublad. If Ubuntu asks, choose **Allow Launching**.
 
 Local results are saved in `data/store.json`. Uploaded files go to `data/attachments/`. The shared GitHub Pages copy stores the same data in the browser instead.
 
@@ -125,7 +122,7 @@ Then commit the updated `docs/` folder.
 5. Use **Export PDF** to share a partial or complete report.
 6. Use **Delete** next to Export PDF to remove a run you did not need.
 7. Compare two recorded runs if you want to see regressions.
-8. Send **https://tectivejk.github.io/sim-testing-app/** to other testers so they can open the same checklist.
+8. Send **https://github.com/TectiveJK/sim-testing-app** to other testers so they can install the same desktop icon.
 
 ## Test runs
 
