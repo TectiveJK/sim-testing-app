@@ -1,10 +1,18 @@
 # sim-testing-app
 
+## Open the app
+
+Do not use `http://127.0.0.1:43147`. That address only works on a computer that is already running the local server. If you see **refused to connect**, you opened that local address.
+
+Open this instead. It is the checklist itself:
+
+**https://tectivejk.github.io/sim-testing-app/**
+
 ## Put the icon on your Ubuntu desktop
 
-The checklist opens from a **SIM Flight Testing** icon on your Desktop (or **Bureaublad**). That is the way to start it. You do not need a web link.
+The desktop icon opens that same address. It does not use `127.0.0.1`.
 
-Run these commands in a terminal **on your Ubuntu computer** (the machine where you fly SkyCommand). If you already cloned the repo, skip clone and start at `cd`:
+Run these commands in a terminal **on your Ubuntu computer**. If you already cloned the repo, skip clone and start at `cd`:
 
 ```bash
 git clone https://github.com/TectiveJK/sim-testing-app.git
@@ -14,7 +22,7 @@ npm install
 npm run setup
 ```
 
-`npm run setup` puts a gold drone icon named **SIM Flight Testing** on your Desktop and on Bureaublad, adds it to the application menu, starts the checklist, and opens it. Double-click the icon next time. If Ubuntu asks, choose **Allow Launching**.
+`npm run setup` puts a gold drone icon named **SIM Flight Testing** on your Desktop and on Bureaublad. Double-click it. If Ubuntu asks, choose **Allow Launching**.
 
 The source repository is https://github.com/TectiveJK/sim-testing-app. Each tester keeps their own results. Use **Export PDF** to share a test-run report.
 
@@ -75,9 +83,9 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
-- Visible Ubuntu desktop icon: **SIM Flight Testing** (Desktop and Bureaublad)
+- Visible Ubuntu desktop icon: **SIM Flight Testing** opens https://tectivejk.github.io/sim-testing-app/
 - Source repository: https://github.com/TectiveJK/sim-testing-app
-- Local Ubuntu install starts at login after one-time setup. Double-click the desktop icon.
+- Do not use http://127.0.0.1:43147 unless you started a local server on purpose
 - Shared web copy saves results in the browser; the Ubuntu copy saves them in `data/store.json`
 
 ## Install once (Ubuntu)
@@ -89,13 +97,7 @@ npm install
 npm run setup
 ```
 
-That does all of this:
-
-- installs **SIM Flight Testing** on the Desktop and in the application menu
-- starts the lab now
-- starts it again automatically when you log in or reboot
-
-After that, do not run `npm run dev`. Double-click **SIM Flight Testing** on the Desktop or Bureaublad. If Ubuntu asks, choose **Allow Launching**.
+That installs the **SIM Flight Testing** icon on the Desktop and in the application menu. The icon opens the checklist in your browser. If Ubuntu asks, choose **Allow Launching**.
 
 Local results are saved in `data/store.json`. Uploaded files go to `data/attachments/`. The shared GitHub Pages copy stores the same data in the browser instead.
 

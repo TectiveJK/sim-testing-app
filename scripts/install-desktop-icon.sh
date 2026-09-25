@@ -72,8 +72,7 @@ Type=Application
 Name=SIM Flight Testing
 GenericName=Flight test checklist
 Comment=Open the SIM Flight Testing checklist
-Exec=/bin/bash "$STARTER"
-Path=$ROOT
+Exec=xdg-open https://tectivejk.github.io/sim-testing-app/
 Icon=$ICON_HOME/hicolor/256x256/apps/sim-flight-testing.png
 Terminal=false
 Categories=Utility;Education;
@@ -155,4 +154,5 @@ if ((${#CREATED[@]})); then
 fi
 echo
 echo "Double-click it. If Ubuntu asks, choose Allow Launching."
-echo "The icon starts the checklist and opens it. You do not need a web link."
+echo "The icon opens https://tectivejk.github.io/sim-testing-app/"
+echo "Do not open http://127.0.0.1:43147 — that address is only a local server."

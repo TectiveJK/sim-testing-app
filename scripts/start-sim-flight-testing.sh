@@ -3,22 +3,22 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT=43147
-URL="http://127.0.0.1:${PORT}"
+LOCAL_URL="http://127.0.0.1:${PORT}"
+WEB_URL="https://tectivejk.github.io/sim-testing-app/"
 
-open_app() {
+open_url() {
+  local url="$1"
   if command -v xdg-open >/dev/null 2>&1; then
-    xdg-open "$URL" >/dev/null 2>&1 || true
+    xdg-open "$url" >/dev/null 2>&1 || true
   elif command -v gio >/dev/null 2>&1; then
-    gio open "$URL" >/dev/null 2>&1 || true
+    gio open "$url" >/dev/null 2>&1 || true
   fi
 }
 
-if ! bash "$ROOT/scripts/ensure-sim-flight-testing.sh"; then
-  DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/sim-flight-testing"
-  zenity --error --text="The SIM Flight Testing server did not start. See $DATA_DIR/server.log" 2>/dev/null \
-    || notify-send "SIM Flight Testing" "Server did not start. See $DATA_DIR/server.log" 2>/dev/null \
-    || echo "Server did not start. See $DATA_DIR/server.log" >&2
-  exit 1
-fi
+# Always open the public checklist first so the tester never lands on a
+# refused 127.0.0.1 page. Then try to start a local copy in the background.
+open_url "$WEB_URL"
 
-open_app
+if [[ -x "$ROOT/scripts/ensure-sim-flight-testing.sh" ]]; then
+  bash "$ROOT/scripts/ensure-sim-flight-testing.sh" >/dev/null 2>&1 || true
+fi
