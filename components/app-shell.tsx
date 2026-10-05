@@ -9,11 +9,13 @@ import {
   GitCompare,
   History,
   LayoutDashboard,
+  LogOut,
   Menu,
   Plane,
   Route,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/components/login-gate";
 import { useAppData } from "@/components/data-provider";
 import { ShareAppLink } from "@/components/share-app-link";
 import { Button } from "@/components/ui/button";
@@ -65,6 +67,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const { ready } = useAppData();
+  const { signOut } = useAuth();
 
   return (
     <div className="flex min-h-full">
@@ -85,6 +88,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           record PASS / FAIL / BLOCKED / NOT TESTED here.
         </p>
         <ShareAppLink compact />
+        <Button variant="outline" size="sm" className="mt-3 w-full" onClick={signOut} data-testid="sign-out">
+          <LogOut />
+          Sign out
+        </Button>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -106,6 +113,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <NavLinks onNavigate={() => setOpen(false)} />
               <Separator className="my-5" />
               <ShareAppLink compact />
+              <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => { setOpen(false); signOut(); }} data-testid="sign-out-mobile">
+                <LogOut />
+                Sign out
+              </Button>
             </div>
           </SheetContent>
         </Sheet>

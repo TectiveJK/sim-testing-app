@@ -8,6 +8,8 @@ Open this instead. It is the checklist itself:
 
 **https://tectivejk.github.io/sim-testing-app/**
 
+The first screen is a login window. Only the owner has the username and password. Without those, the checklist stays closed.
+
 ## Put the icon on your Ubuntu desktop
 
 The desktop icon opens that same address. It does not use `127.0.0.1`.

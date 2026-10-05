@@ -9,6 +9,12 @@ function assert(cond, message) {
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage();
+await page.addInitScript(() => {
+  window.localStorage.setItem(
+    "sim-flight-testing-auth-v1",
+    "e1907e91649c4bb8463bb803a2399e69f98af7de4dd17d9db4eb058ac8ed4bff",
+  );
+});
 
 try {
   await page.goto(`${base}/catalog`, { waitUntil: "networkidle" });

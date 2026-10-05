@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { AppShell } from "@/components/app-shell";
 import { DataProvider } from "@/components/data-provider";
+import { LoginGate } from "@/components/login-gate";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     "Checklist and result-recording app for SIM flight tests. SkyCommand stays separate.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
@@ -33,10 +35,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
         <TooltipProvider>
-          <DataProvider>
-            <AppShell>{children}</AppShell>
-            <Toaster />
-          </DataProvider>
+          <LoginGate>
+            <DataProvider>
+              <AppShell>{children}</AppShell>
+              <Toaster />
+            </DataProvider>
+          </LoginGate>
         </TooltipProvider>
         </ThemeProvider>
       </body>
