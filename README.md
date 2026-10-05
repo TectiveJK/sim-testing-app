@@ -8,7 +8,7 @@ Open this instead. It is the checklist itself:
 
 **https://tectivejk.github.io/sim-testing-app/**
 
-The first screen is a login window. Only the owner has the username and password. Without those, the checklist stays closed.
+The first screen is a login window. Only the owner can sign in. The username and password are not written in this repository.
 
 ## Put the icon on your Ubuntu desktop
 
@@ -30,7 +30,7 @@ The source repository is https://github.com/TectiveJK/sim-testing-app. Each test
 
 ## Description
 
-SIM Flight Testing is a **testing checklist and result-recording** application. It does not control, communicate with, or receive data from SkyCommand. The two applications stay completely independent.
+SIM Flight Testing is a **testing checklist and result-recording** application. It does not control, communicate with, or receive data from SkyCommand. The two applications stay completely independent. A login window appears first so only the owner can open the checklist. The username and password are not stored in this README or anywhere else in the repository as plain text.
 
 The tester reads the procedure in SIM Flight Testing, performs the required actions manually in SkyCommand on the other monitor, then returns here to record the result.
 
@@ -85,6 +85,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake
+- Private login window before the checklist opens. Credentials are not published in this repository.
 - Visible Ubuntu desktop icon: **SIM Flight Testing** opens https://tectivejk.github.io/sim-testing-app/
 - Source repository: https://github.com/TectiveJK/sim-testing-app
 - Do not use http://127.0.0.1:43147 unless you started a local server on purpose

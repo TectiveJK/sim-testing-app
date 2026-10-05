@@ -1,4 +1,5 @@
-const AUTH_USERNAME = "jk-simlab";
+const AUTH_USERNAME_SHA256 =
+  "9b0502621663377fb13c9ed4f20c6073fd590f529e7c65fa1a20046e1eaf0253";
 const AUTH_PASSWORD_SHA256 =
   "a8b3d023e2238028cda74dfefda9e0ab62a90e64710688e701713c484a2ab029";
 const AUTH_SESSION_TOKEN =
@@ -15,8 +16,8 @@ export async function sha256Hex(value: string) {
 export async function verifyCredentials(username: string, password: string) {
   const user = username.trim();
   if (!user || !password) return false;
-  const passwordHash = await sha256Hex(password);
-  if (user !== AUTH_USERNAME || passwordHash !== AUTH_PASSWORD_SHA256) {
+  const [userHash, passwordHash] = await Promise.all([sha256Hex(user), sha256Hex(password)]);
+  if (userHash !== AUTH_USERNAME_SHA256 || passwordHash !== AUTH_PASSWORD_SHA256) {
     return false;
   }
   return true;
