@@ -52,7 +52,34 @@ There is also a simple **Notes / Observations** field.
 
 Optional fields can still be stored with a run (software version labels, tester name, date, attachments) so later runs can be compared. Those labels are written by the tester. The app never reads them from SkyCommand.
 
-The catalog holds the flight functions, commands, and mission scenarios. Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from the existing suite and records whether previously verified behaviour still works.
+The catalog is a **Task / Element / Operation** matrix with **77** built-in tests. A Task is the current flight situation (for example Corridor or Viewpoint). An Element is the phase inside that task (for example Take-off or to viewpoint). An Operation is the command to issue in SkyCommand (for example Complete, loiter, Return to Hive, or RTL).
+
+Tasks in the suite:
+
+- Deployed on hive
+- Corridor
+- Viewpoint
+- Loiter
+- PostCTL
+- LIP
+- EFL
+- RTL
+
+Operations in the suite:
+
+- Complete
+- arm
+- mission
+- loiter
+- POSCTL
+- EFL
+- Land
+- Return to Hive
+- RTL
+
+Not every Task / Element combination has every Operation. Blue cells in the Test catalog are tests that exist. Empty cells are not in the suite. **Return to Hive** is an Operation (from Viewpoint / to viewpoint), not a Task. **RTL** is both a Task (with Complete) and an Operation (from Viewpoint / to viewpoint).
+
+Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from this suite and records whether previously verified behaviour still works.
 
 The app keeps a history of previous executions so a function that passed on one release can be compared with the same function after a later release. For example, Return to Launch after GCS connection loss may pass on SkyCommand 1.2.0 / Drone 3.4.1 and fail on SkyCommand 1.3.0 / Drone 3.4.2.
 
@@ -141,4 +168,4 @@ The catalog matrix shows which Task / Element / Operation cases exist. Blue cell
 
 ## Adding tests later
 
-Use **Test catalog → Add test**, or add a row in `lib/catalog.ts` and (optionally) a mission in `lib/missions.ts`. New tests are added to existing runs as Not Tested.
+Use **Test catalog → Add test**, or add a Task / Element / Operation row in `lib/catalog.ts` and (optionally) a mission in `lib/missions.ts`. New tests are added to existing runs as Not Tested.
