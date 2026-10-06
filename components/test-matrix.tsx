@@ -31,7 +31,7 @@ export function TestMatrix({
         <thead className="sticky top-0 z-10 bg-card">
           <tr>
             <th className="sticky left-0 z-20 bg-card px-3 py-2 text-left font-medium">
-              Current state
+              Task / element
             </th>
             {commands.map((command) => (
               <th key={command} className="px-2 py-2 text-center font-medium">

@@ -58,7 +58,7 @@ function CatalogInner() {
       <PageHeader
         eyebrow="Catalog"
         title="Flight functions and transitions"
-        description="Instructions only. Each cell is a test you will perform yourself in SkyCommand. Empty cells are not in the suite. Scoring happens in a test run, not here."
+        description="Each blue cell is a Task / Element / Operation test you fly yourself in SkyCommand. Empty cells are not in the suite. Scoring happens in a test run, not here."
         actions={
           <Button onClick={() => setOpen(true)}>Add test</Button>
         }
@@ -71,7 +71,7 @@ function CatalogInner() {
           placeholder="Search tests, IDs, or phases"
         />
         <NativeSelect value={state} onChange={(event) => setState(event.target.value)}>
-          <option value="all">All current states</option>
+          <option value="all">All tasks</option>
           {catalog.states.map((item) => (
             <option key={item} value={item}>
               {item}
@@ -79,7 +79,7 @@ function CatalogInner() {
           ))}
         </NativeSelect>
         <NativeSelect value={command} onChange={(event) => setCommand(event.target.value)}>
-          <option value="all">All commands</option>
+          <option value="all">All operations</option>
           {catalog.commands.map((item) => (
             <option key={item} value={item}>
               {item}
@@ -247,7 +247,7 @@ function AddTestDialog({
           }}
         >
           <div className="space-y-1.5">
-            <Label htmlFor="new-state">Current state</Label>
+            <Label htmlFor="new-state">Task</Label>
             <Input
               id="new-state"
               required
@@ -257,7 +257,7 @@ function AddTestDialog({
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="new-phase">Phase / sub-state</Label>
+            <Label htmlFor="new-phase">Element</Label>
             <Input
               id="new-phase"
               value={phase}
@@ -266,7 +266,7 @@ function AddTestDialog({
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="new-command">Command</Label>
+            <Label htmlFor="new-command">Operation</Label>
             <NativeSelect
               id="new-command"
               value={command}

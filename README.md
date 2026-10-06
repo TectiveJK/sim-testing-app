@@ -79,7 +79,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Standalone checklist: this app does not control or talk to SkyCommand
 - Read the procedure here, fly the test in SkyCommand, then record **PASS** / **FAIL** / **BLOCKED** / **NOT TESTED** plus Notes / Observations
 - **Next test** after each result
-- 100 built-in tests from the current state → command matrix (Corridor, Viewpoint, LIP, EFL, Return to Hive, RTL, Deployed on hive, PostCTL, Loiter × Complete, arm, mission, loiter, POSCTL, EFL, Land, RTL)
+- 77 built-in tests from the Task / Element / Operation matrix (Deployed on hive, Corridor, Viewpoint, Loiter, PostCTL, LIP, EFL, RTL × Complete, arm, mission, loiter, POSCTL, EFL, Land, Return to Hive, RTL)
 - Mission walkthroughs with step-by-step results
 - Test runs that store optional software-version labels and `.deb` artifact names
 - History and side-by-side run comparison for regressions
@@ -137,7 +137,7 @@ Each run copies the current catalog so the tester records the same suite against
 - **Delete** is next to Export PDF on the Test runs list and on the run page. Use it to remove a run you did not do.
 - CSV and JSON exports stay available on the run page for spreadsheet or archive use.
 
-The catalog matrix shows which state → command cases exist. Blue cells marked — are tests in the suite; they are not score boxes. Scoring happens only inside a test run.
+The catalog matrix shows which Task / Element / Operation cases exist. Blue cells marked — are tests in the suite; they are not score boxes. Scoring happens only inside a test run.
 
 ## Adding tests later
 

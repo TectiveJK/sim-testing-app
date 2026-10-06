@@ -1,115 +1,85 @@
 import type { Command, TestCase } from "@/lib/types";
 
-type RawTest = [currentState: string, phase: string, command: Command];
+type RawTest = [task: string, element: string, operation: Command];
 
 const RAW_TESTS: RawTest[] = [
+  ["Deployed on hive", "disarmed", "arm"],
   ["Corridor", "Take-off", "Complete"],
   ["Corridor", "To First Waypoint", "Complete"],
   ["Corridor", "Main/any mission corridor", "Complete"],
   ["Corridor", "To HL", "Complete"],
   ["Corridor", "Landing on hive", "Complete"],
+  ["Viewpoint", "to viewpoint", "Return to Hive"],
+  ["Viewpoint", "to viewpoint", "RTL"],
+  ["RTL", "", "Complete"],
+  ["Corridor", "Main/any mission corridor", "loiter"],
+  ["Loiter", "", "mission"],
+  ["Corridor", "Main/any mission corridor", "POSCTL"],
+  ["PostCTL", "In control", "mission"],
+  ["Corridor", "Main/any mission corridor", "EFL"],
+  ["EFL", "Descending", "mission"],
+  ["Corridor", "Main/any mission corridor", "Land"],
+  ["LIP", "Descending", "mission"],
   ["Viewpoint", "To hive from swap", "Complete"],
+  ["PostCTL", "In control", "arm"],
+  ["Deployed on hive", "disarmed", "POSCTL"],
+  ["Corridor", "Take-off", "loiter"],
+  ["Corridor", "Take-off", "POSCTL"],
+  ["Corridor", "Take-off", "EFL"],
+  ["Corridor", "To First Waypoint", "loiter"],
+  ["Corridor", "To First Waypoint", "POSCTL"],
+  ["Corridor", "To First Waypoint", "EFL"],
+  ["Corridor", "To First Waypoint", "Land"],
+  ["Corridor", "To HL", "loiter"],
+  ["Corridor", "To HL", "POSCTL"],
+  ["Corridor", "To HL", "EFL"],
+  ["Corridor", "To HL", "Land"],
+  ["Viewpoint", "to viewpoint", "loiter"],
+  ["Viewpoint", "to viewpoint", "POSCTL"],
+  ["Viewpoint", "to viewpoint", "EFL"],
+  ["Viewpoint", "to viewpoint", "Land"],
+  ["Viewpoint", "waiting for release", "loiter"],
+  ["Viewpoint", "waiting for release", "POSCTL"],
+  ["Viewpoint", "waiting for release", "EFL"],
+  ["Viewpoint", "waiting for release", "Land"],
+  ["Viewpoint", "To hive from swap", "loiter"],
+  ["Viewpoint", "To hive from swap", "POSCTL"],
+  ["Viewpoint", "To hive from swap", "EFL"],
+  ["Viewpoint", "To hive from swap", "Land"],
+  ["Loiter", "", "POSCTL"],
+  ["Loiter", "", "EFL"],
+  ["Loiter", "", "Land"],
+  ["PostCTL", "In control", "loiter"],
+  ["PostCTL", "In control", "EFL"],
+  ["PostCTL", "In control", "Land"],
+  ["LIP", "Descending", "loiter"],
+  ["LIP", "Descending", "POSCTL"],
+  ["LIP", "Descending", "EFL"],
   ["LIP", "Descending", "Complete"],
+  ["LIP", "Descending", "Land"],
+  ["LIP", "Landed (disarmed)", "arm"],
+  ["LIP", "Landed (disarmed)", "mission"],
+  ["LIP", "Landed (disarmed)", "POSCTL"],
+  ["LIP", "Landed (disarmed)", "EFL"],
+  ["LIP", "Back to mission", "loiter"],
+  ["LIP", "Back to mission", "POSCTL"],
+  ["LIP", "Back to mission", "EFL"],
+  ["LIP", "Back to mission", "Land"],
+  ["EFL", "Descending", "loiter"],
+  ["EFL", "Descending", "POSCTL"],
+  ["EFL", "Descending", "EFL"],
+  ["EFL", "Descending", "Land"],
+  ["EFL", "Loiter", "POSCTL"],
+  ["EFL", "Loiter", "EFL"],
+  ["EFL", "Loiter", "Land"],
+  ["EFL", "Back to mission", "loiter"],
+  ["EFL", "Back to mission", "POSCTL"],
+  ["EFL", "Back to mission", "EFL"],
+  ["EFL", "Back to mission", "Land"],
   ["LIP", "Back to mission", "Complete"],
   ["EFL", "Descending", "Complete"],
-  ["EFL", "Back to mission", "Complete"],
-  ["Return to Hive", "", "Complete"],
-  ["RTL", "", "Complete"],
-
-  ["Deployed on hive", "disarmed", "arm"],
-  ["PostCTL", "In control", "arm"],
-  ["LIP", "Landed (disarmed)", "arm"],
-
-  ["Loiter", "", "mission"],
-  ["PostCTL", "In control", "mission"],
-  ["LIP", "Descending", "mission"],
-  ["LIP", "Landed (disarmed)", "mission"],
-  ["EFL", "Descending", "mission"],
   ["EFL", "Loiter", "mission"],
-
-  ["Corridor", "Take-off", "loiter"],
-  ["Corridor", "To First Waypoint", "loiter"],
-  ["Corridor", "Main/any mission corridor", "loiter"],
-  ["Corridor", "To HL", "loiter"],
-  ["Viewpoint", "to viewpoint", "loiter"],
-  ["Viewpoint", "waiting for release", "loiter"],
-  ["Viewpoint", "To hive from swap", "loiter"],
-  ["PostCTL", "In control", "loiter"],
-  ["LIP", "Descending", "loiter"],
-  ["LIP", "Back to mission", "loiter"],
-  ["EFL", "Descending", "loiter"],
-  ["EFL", "Back to mission", "loiter"],
-  ["Return to Hive", "", "loiter"],
-  ["RTL", "", "loiter"],
-
-  ["Deployed on hive", "disarmed", "POSCTL"],
-  ["Corridor", "Take-off", "POSCTL"],
-  ["Corridor", "To First Waypoint", "POSCTL"],
-  ["Corridor", "Main/any mission corridor", "POSCTL"],
-  ["Corridor", "To HL", "POSCTL"],
-  ["Viewpoint", "to viewpoint", "POSCTL"],
-  ["Viewpoint", "waiting for release", "POSCTL"],
-  ["Viewpoint", "To hive from swap", "POSCTL"],
-  ["Loiter", "", "POSCTL"],
-  ["LIP", "Descending", "POSCTL"],
-  ["LIP", "Landed (disarmed)", "POSCTL"],
-  ["LIP", "Back to mission", "POSCTL"],
-  ["EFL", "Descending", "POSCTL"],
-  ["EFL", "Loiter", "POSCTL"],
-  ["EFL", "Back to mission", "POSCTL"],
-  ["Return to Hive", "", "POSCTL"],
-  ["RTL", "", "POSCTL"],
-
-  ["Corridor", "Take-off", "EFL"],
-  ["Corridor", "To First Waypoint", "EFL"],
-  ["Corridor", "Main/any mission corridor", "EFL"],
-  ["Corridor", "To HL", "EFL"],
-  ["Viewpoint", "to viewpoint", "EFL"],
-  ["Viewpoint", "waiting for release", "EFL"],
-  ["Viewpoint", "To hive from swap", "EFL"],
-  ["Loiter", "", "EFL"],
-  ["PostCTL", "In control", "EFL"],
-  ["LIP", "Descending", "EFL"],
-  ["LIP", "Landed (disarmed)", "EFL"],
-  ["LIP", "Back to mission", "EFL"],
-  ["EFL", "Descending", "EFL"],
-  ["EFL", "Loiter", "EFL"],
-  ["EFL", "Back to mission", "EFL"],
-  ["Return to Hive", "", "EFL"],
-  ["RTL", "", "EFL"],
-
-  ["Corridor", "To First Waypoint", "Land"],
-  ["Corridor", "Main/any mission corridor", "Land"],
-  ["Corridor", "To HL", "Land"],
-  ["Viewpoint", "to viewpoint", "Land"],
-  ["Viewpoint", "waiting for release", "Land"],
-  ["Viewpoint", "To hive from swap", "Land"],
-  ["Loiter", "", "Land"],
-  ["PostCTL", "In control", "Land"],
-  ["LIP", "Descending", "Land"],
-  ["LIP", "Back to mission", "Land"],
-  ["EFL", "Descending", "Land"],
-  ["EFL", "Loiter", "Land"],
-  ["EFL", "Back to mission", "Land"],
-  ["Return to Hive", "", "Land"],
-  ["RTL", "", "Land"],
-
-  ["Corridor", "Take-off", "RTL"],
-  ["Corridor", "To First Waypoint", "RTL"],
-  ["Corridor", "Main/any mission corridor", "RTL"],
-  ["Corridor", "To HL", "RTL"],
-  ["Corridor", "Landing on hive", "RTL"],
-  ["Viewpoint", "to viewpoint", "RTL"],
-  ["Viewpoint", "waiting for release", "RTL"],
-  ["Viewpoint", "To hive from swap", "RTL"],
-  ["Loiter", "", "RTL"],
-  ["PostCTL", "In control", "RTL"],
-  ["LIP", "Descending", "RTL"],
-  ["LIP", "Back to mission", "RTL"],
-  ["EFL", "Descending", "RTL"],
-  ["EFL", "Loiter", "RTL"],
-  ["EFL", "Back to mission", "RTL"],
-  ["RTL", "", "RTL"],
+  ["EFL", "Back to mission", "Complete"],
 ];
 
 function slug(value: string) {
@@ -139,6 +109,8 @@ function commandLabel(command: string) {
       return "Emergency flight / EFL";
     case "Land":
       return "Land";
+    case "Return to Hive":
+      return "Return to hive";
     case "RTL":
       return "Return to launch (RTL)";
     default:
@@ -183,6 +155,16 @@ export const BUILTIN_TESTS: TestCase[] = RAW_TESTS.map(([currentState, phase, co
   procedure: procedure(currentState, phase, command),
 }));
 
+{
+  const ids = BUILTIN_TESTS.map((test) => test.id);
+  if (new Set(ids).size !== ids.length) {
+    throw new Error("Duplicate built-in test ids");
+  }
+  if (ids.length !== 77) {
+    throw new Error(`Expected 77 built-in tests, got ${ids.length}`);
+  }
+}
+
 export const STATE_ORDER = [
   "Deployed on hive",
   "Corridor",
@@ -191,7 +173,6 @@ export const STATE_ORDER = [
   "PostCTL",
   "LIP",
   "EFL",
-  "Return to Hive",
   "RTL",
 ];
 
@@ -209,7 +190,6 @@ export const PHASE_ORDER: Record<string, string[]> = {
   PostCTL: ["In control"],
   LIP: ["Descending", "Landed (disarmed)", "Back to mission"],
   EFL: ["Descending", "Loiter", "Back to mission"],
-  "Return to Hive": [""],
   RTL: [""],
 };
 

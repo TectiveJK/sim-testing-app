@@ -20,9 +20,9 @@ try {
   await page.goto(`${base}/catalog`, { waitUntil: "networkidle" });
   await page.getByTestId("tab-list").click();
   await page.waitForURL(/view=list/);
-  await page.waitForSelector('[data-testid="catalog-test-rtl-rtl"]');
+  await page.waitForSelector('[data-testid="catalog-test-rtl-complete"]');
   const firstTitle = await page.getByTestId("catalog-detail-title").innerText();
-  await page.getByTestId("catalog-test-rtl-rtl").click();
+  await page.getByTestId("catalog-test-rtl-complete").click();
   await page.waitForFunction(
     (previous) => document.querySelector("[data-testid=catalog-detail-title]")?.textContent !== previous,
     firstTitle,
@@ -52,7 +52,7 @@ try {
   await page.waitForSelector('[data-testid="run-test-corridor-take-off-complete"]');
 
   const initial = await page.getByTestId("result-title").innerText();
-  await page.getByTestId("run-test-rtl-rtl").click();
+  await page.getByTestId("run-test-rtl-complete").click();
   await page.waitForFunction(
     (previous) => document.querySelector("[data-testid=result-title]")?.textContent !== previous,
     initial,

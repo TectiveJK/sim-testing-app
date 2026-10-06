@@ -96,18 +96,18 @@ export const BUILTIN_MISSIONS: Mission[] = [
   },
   {
     id: "rtl-from-flight",
-    name: "RTL from in-flight states",
+    name: "Return from viewpoint",
     category: "RTL",
-    description: "Command RTL from corridor, viewpoint, loiter, PostCTL, LIP, and EFL states.",
+    description: "From viewpoint transit, command Return to Hive and RTL, then confirm RTL itself completes.",
     steps: [
-      step("Corridor", "Take-off", "RTL", "During corridor take-off, command RTL."),
-      step("Corridor", "To First Waypoint", "RTL", "En route to the first waypoint, command RTL."),
-      step("Corridor", "Main/any mission corridor", "RTL", "On the corridor, command RTL."),
-      step("Corridor", "To HL", "RTL", "On the way to HL, command RTL."),
-      step("Corridor", "Landing on hive", "RTL", "During hive landing, command RTL."),
+      step(
+        "Viewpoint",
+        "to viewpoint",
+        "Return to Hive",
+        "While flying to a viewpoint, command Return to Hive.",
+      ),
       step("Viewpoint", "to viewpoint", "RTL", "While flying to a viewpoint, command RTL."),
-      step("Loiter", "", "RTL", "From loiter, command RTL."),
-      step("RTL", "", "RTL", "While already in RTL, re-issue RTL and confirm it stays consistent."),
+      step("RTL", "", "Complete", "Confirm RTL completes and the drone finishes the return."),
     ],
   },
 ];

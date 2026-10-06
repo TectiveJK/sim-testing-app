@@ -16,6 +16,7 @@ export const COMMANDS = [
   "POSCTL",
   "EFL",
   "Land",
+  "Return to Hive",
   "RTL",
 ] as const;
 

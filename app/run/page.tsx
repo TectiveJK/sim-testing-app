@@ -223,7 +223,7 @@ function RunDetailInner() {
               placeholder="Search tests or notes"
             />
             <NativeSelect value={state} onChange={(event) => setState(event.target.value)}>
-              <option value="all">All states</option>
+              <option value="all">All tasks</option>
               {catalog.states.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -231,7 +231,7 @@ function RunDetailInner() {
               ))}
             </NativeSelect>
             <NativeSelect value={command} onChange={(event) => setCommand(event.target.value)}>
-              <option value="all">All commands</option>
+              <option value="all">All operations</option>
               {catalog.commands.map((item) => (
                 <option key={item} value={item}>
                   {item}
