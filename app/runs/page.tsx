@@ -34,7 +34,7 @@ export default function RunsPage() {
         <Card>
           <CardContent className="py-16 text-center">
             <p className="text-sm text-muted-foreground">
-              No test runs yet. Start one to begin scoring the 77 Task / Element / Operation tests against a software
+              No test runs yet. Start one to begin scoring the 18 condensed missions against a software
               version.
             </p>
             <LinkButton href="/runs/new" className="mt-4">

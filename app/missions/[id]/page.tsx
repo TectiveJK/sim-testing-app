@@ -4,7 +4,6 @@ import { use, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { LinkButton } from "@/components/link-button";
 import { ResultPanel } from "@/components/result-panel";
-import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { NativeSelect } from "@/components/native-select";
@@ -30,9 +29,9 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
 
   const run = store.runs.find((item) => item.id === runId);
   const step = mission.steps[stepIndex];
-  const test = catalog.tests.find((item) => item.id === step?.testCaseId);
+  const test = catalog.tests.find((item) => item.id === mission.id);
   const result = run
-    ? store.results.find((item) => item.testRunId === run.id && item.testCaseId === step?.testCaseId)
+    ? store.results.find((item) => item.testRunId === run.id && item.testCaseId === mission.id)
     : undefined;
 
   return (
@@ -52,7 +51,7 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
         <Card>
           <CardContent className="py-10 text-center">
             <p className="text-sm text-muted-foreground">
-              Create a test run first so mission steps can be scored against a software version.
+              Create a test run first so this mission can be scored against a software version.
             </p>
             <LinkButton href="/runs/new" className="mt-4">
               New test run
@@ -74,33 +73,22 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
                 </NativeSelect>
               </div>
               <ol className="space-y-2">
-                {mission.steps.map((item, index) => {
-                  const stepTest = catalog.tests.find((entry) => entry.id === item.testCaseId);
-                  const stepResult = run
-                    ? store.results.find(
-                        (entry) => entry.testRunId === run.id && entry.testCaseId === item.testCaseId,
-                      )
-                    : undefined;
-                  return (
-                    <li key={item.testCaseId}>
-                      <button
-                        type="button"
-                        onClick={() => setStepIndex(index)}
-                        className={`w-full rounded-lg border px-3 py-2 text-left text-sm ${
-                          index === stepIndex ? "border-primary bg-muted/70" : "hover:bg-muted/40"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-medium">
-                            {index + 1}. {stepTest?.name}
-                          </span>
-                          {stepResult ? <StatusBadge status={stepResult.status} short /> : null}
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground">{item.instruction}</p>
-                      </button>
-                    </li>
-                  );
-                })}
+                {mission.steps.map((item, index) => (
+                  <li key={`${mission.id}-${index}`}>
+                    <button
+                      type="button"
+                      onClick={() => setStepIndex(index)}
+                      className={`w-full rounded-lg border px-3 py-2 text-left text-sm ${
+                        index === stepIndex ? "border-primary bg-muted/70" : "hover:bg-muted/40"
+                      }`}
+                    >
+                      <span className="font-medium">
+                        {index + 1}. {item.label || `Step ${index + 1}`}
+                      </span>
+                      <p className="mt-1 text-xs text-muted-foreground">{item.instruction}</p>
+                    </button>
+                  </li>
+                ))}
               </ol>
             </CardContent>
           </Card>
@@ -108,7 +96,7 @@ export default function MissionDetailPage({ params }: { params: Promise<{ id: st
             <CardContent className="pt-6">
               {test && result && run ? (
                 <>
-                  <p className="mb-4 text-sm text-muted-foreground">{step.instruction}</p>
+                  <p className="mb-4 text-sm text-muted-foreground">{step?.instruction}</p>
                   <ResultPanel
                     key={test.id}
                     test={test}

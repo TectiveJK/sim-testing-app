@@ -16,13 +16,31 @@ export function emptyStore(): AppStore {
 export function normalizeStore(raw: Partial<AppStore> | null): AppStore {
   const base = emptyStore();
   if (!raw) return base;
-  return {
+  const store: AppStore = {
     artifacts: Array.isArray(raw.artifacts) && raw.artifacts.length > 0 ? raw.artifacts : base.artifacts,
     testers: Array.isArray(raw.testers) ? raw.testers : [],
     runs: Array.isArray(raw.runs) ? raw.runs : [],
     results: Array.isArray(raw.results) ? raw.results : [],
     customTests: Array.isArray(raw.customTests) ? raw.customTests : [],
   };
+  const tests = mergeCatalog(store.customTests);
+  for (const run of store.runs) {
+    const have = new Set(
+      store.results.filter((result) => result.testRunId === run.id).map((result) => result.testCaseId),
+    );
+    for (const test of tests) {
+      if (have.has(test.id)) continue;
+      store.results.push({
+        id: crypto.randomUUID(),
+        testRunId: run.id,
+        testCaseId: test.id,
+        status: "not_tested",
+        notes: "",
+        attachments: [],
+      });
+    }
+  }
+  return store;
 }
 
 export function allTests(store: AppStore): TestCase[] {

@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { queryHref, ViewPanel, ViewTabs } from "@/components/simple-tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/components/data-provider";
-import { COMMANDS } from "@/lib/types";
 
 export default function CatalogPage() {
   return (
@@ -30,26 +29,25 @@ function CatalogInner() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const view = searchParams.get("view") === "list" ? "list" : "matrix";
+  const view = searchParams.get("view") === "matrix" ? "matrix" : "list";
   const selectedId = searchParams.get("test");
   const [query, setQuery] = useState("");
   const [state, setState] = useState("all");
-  const [command, setCommand] = useState("all");
   const [open, setOpen] = useState(false);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return catalog.tests.filter((test) => {
       if (state !== "all" && test.currentState !== state) return false;
-      if (command !== "all" && test.command !== command) return false;
       if (!needle) return true;
       return (
         test.name.toLowerCase().includes(needle) ||
         test.id.toLowerCase().includes(needle) ||
-        test.phase.toLowerCase().includes(needle)
+        test.phase.toLowerCase().includes(needle) ||
+        test.currentState.toLowerCase().includes(needle)
       );
     });
-  }, [catalog.tests, query, state, command]);
+  }, [catalog.tests, query, state]);
 
   const selected = catalog.tests.find((test) => test.id === selectedId) ?? filtered[0];
 
@@ -57,30 +55,22 @@ function CatalogInner() {
     <div>
       <PageHeader
         eyebrow="Catalog"
-        title="Flight functions and transitions"
-        description="Each blue cell is a Task / Element / Operation test you fly yourself in SkyCommand. Empty cells are not in the suite. Scoring happens in a test run, not here."
+        title="Condensed mission suite"
+        description="The catalog is 18 missions. Read the procedure here, fly it in SkyCommand, then score the mission in a test run."
         actions={
           <Button onClick={() => setOpen(true)}>Add test</Button>
         }
       />
 
-      <div className="mb-4 grid gap-2 sm:grid-cols-3">
+      <div className="mb-4 grid gap-2 sm:grid-cols-2">
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search tests, IDs, or phases"
+          placeholder="Search missions"
         />
         <NativeSelect value={state} onChange={(event) => setState(event.target.value)}>
-          <option value="all">All tasks</option>
+          <option value="all">All categories</option>
           {catalog.states.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </NativeSelect>
-        <NativeSelect value={command} onChange={(event) => setCommand(event.target.value)}>
-          <option value="all">All operations</option>
-          {catalog.commands.map((item) => (
             <option key={item} value={item}>
               {item}
             </option>
@@ -92,14 +82,14 @@ function CatalogInner() {
         value={view}
         items={[
           {
-            value: "matrix",
-            label: "Transition matrix",
-            href: queryHref(pathname, searchParams, { view: "matrix" }),
-          },
-          {
             value: "list",
             label: "List",
             href: queryHref(pathname, searchParams, { view: "list" }),
+          },
+          {
+            value: "matrix",
+            label: "By category",
+            href: queryHref(pathname, searchParams, { view: "matrix" }),
           },
         ]}
       />
@@ -118,15 +108,15 @@ function CatalogInner() {
             }}
           />
           <p className="mt-2 text-xs text-muted-foreground">
-            Showing {filtered.length} of {catalog.tests.length} tests. Cells marked — are checklist
-            items. Score them in a test run after you have flown them in SkyCommand.
+            Showing {filtered.length} of {catalog.tests.length} missions. Score them in a test run
+            after you have flown them in SkyCommand.
           </p>
       </ViewPanel>
       <ViewPanel when="list" active={view}>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <Card>
               <CardHeader>
-                <CardTitle>Tests</CardTitle>
+                <CardTitle>Missions</CardTitle>
               </CardHeader>
               <CardContent className="max-h-[70vh] space-y-1 overflow-auto">
                 {filtered.length === 0 ? (
@@ -210,7 +200,6 @@ function AddTestDialog({
 }) {
   const [currentState, setCurrentState] = useState("");
   const [phase, setPhase] = useState("");
-  const [command, setCommand] = useState("Complete");
   const [description, setDescription] = useState("");
   const [expectedBehavior, setExpectedBehavior] = useState("");
   const [procedure, setProcedure] = useState("");
@@ -219,7 +208,7 @@ function AddTestDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add a flight test</DialogTitle>
+          <DialogTitle>Add a mission</DialogTitle>
         </DialogHeader>
         <form
           className="space-y-3"
@@ -229,12 +218,13 @@ function AddTestDialog({
               await onSubmit({
                 currentState,
                 phase,
-                command,
+                command: "Mission",
+                name: phase.trim() || currentState.trim(),
                 description,
                 expectedBehavior,
                 procedure,
               });
-              toast.success("Test added to the catalog");
+              toast.success("Mission added to the catalog");
               setCurrentState("");
               setPhase("");
               setDescription("");
@@ -247,46 +237,24 @@ function AddTestDialog({
           }}
         >
           <div className="space-y-1.5">
-            <Label htmlFor="new-state">Task</Label>
+            <Label htmlFor="new-state">Category</Label>
             <Input
               id="new-state"
               required
               value={currentState}
               onChange={(event) => setCurrentState(event.target.value)}
-              placeholder="Corridor"
+              placeholder="Nominal flight"
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="new-phase">Element</Label>
+            <Label htmlFor="new-phase">Mission name</Label>
             <Input
               id="new-phase"
+              required
               value={phase}
               onChange={(event) => setPhase(event.target.value)}
-              placeholder="Take-off"
+              placeholder="Corridor hive to hive"
             />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="new-command">Operation</Label>
-            <NativeSelect
-              id="new-command"
-              value={command}
-              onChange={(event) => setCommand(event.target.value)}
-            >
-              {COMMANDS.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-              <option value="custom">Custom…</option>
-            </NativeSelect>
-            {command === "custom" || !COMMANDS.includes(command as (typeof COMMANDS)[number]) ? (
-              <Input
-                className="mt-2"
-                value={command === "custom" ? "" : command}
-                onChange={(event) => setCommand(event.target.value)}
-                placeholder="Command name"
-              />
-            ) : null}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="new-desc">Description</Label>
@@ -316,7 +284,7 @@ function AddTestDialog({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">Save test</Button>
+            <Button type="submit">Save mission</Button>
           </div>
         </form>
       </DialogContent>

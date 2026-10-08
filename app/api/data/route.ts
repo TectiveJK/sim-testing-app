@@ -1,11 +1,10 @@
-import { COMMANDS } from "@/lib/types";
 import { catalogPayload } from "@/lib/catalog";
 import { BUILTIN_MISSIONS } from "@/lib/missions";
 import { readStore } from "@/lib/store";
 
 export async function GET() {
   const store = await readStore();
-  const { tests, states, phasesByState } = catalogPayload(store.customTests);
+  const { tests, states, phasesByState, commands } = catalogPayload(store.customTests);
 
   return Response.json(
     {
@@ -15,7 +14,7 @@ export async function GET() {
         missions: BUILTIN_MISSIONS,
         states,
         phasesByState,
-        commands: [...COMMANDS],
+        commands,
       },
     },
     { headers: { "Cache-Control": "no-store" } },

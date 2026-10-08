@@ -52,32 +52,42 @@ There is also a simple **Notes / Observations** field.
 
 Optional fields can still be stored with a run (software version labels, tester name, date, attachments) so later runs can be compared. Those labels are written by the tester. The app never reads them from SkyCommand.
 
-The catalog is a **Task / Element / Operation** matrix with **77** built-in tests. A Task is the current flight situation (for example Corridor or Viewpoint). An Element is the phase inside that task (for example Take-off or to viewpoint). An Operation is the command to issue in SkyCommand (for example Complete, loiter, Return to Hive, or RTL).
+The catalog is **18 condensed missions**. Each mission groups Task / Element / Operation cases that can be flown together. The tester scores the mission once after flying its steps in SkyCommand.
 
-Tasks in the suite:
+Nominal flight:
 
-- Deployed on hive
-- Corridor
-- Viewpoint
-- Loiter
-- PostCTL
-- LIP
-- EFL
-- RTL
+1. Corridor hive to hive
+2. Viewpoint swap to hive
+3. Return to Hive from viewpoint transit
+4. RTL from viewpoint transit
 
-Operations in the suite:
+In-flight interrupt and resume:
 
-- Complete
-- arm
-- mission
-- loiter
-- POSCTL
-- EFL
-- Land
-- Return to Hive
-- RTL
+5. In-flight loiter, then resume
+6. In-flight POSCTL, then resume
+7. In-flight EFL, then resume
+8. In-flight Land / LIP, then resume
 
-Not every Task / Element combination has every Operation. Blue cells in the Test catalog are tests that exist. Empty cells are not in the suite. **Return to Hive** is an Operation (from Viewpoint / to viewpoint), not a Task. **RTL** is both a Task (with Complete) and an Operation (from Viewpoint / to viewpoint).
+Ground / hold:
+
+9. POSCTL from the hive
+10. Arm from PostCTL
+11. From loiter, leave hold
+12. From PostCTL, leave hold
+
+LIP:
+
+13. LIP descent
+14. After LIP landing
+15. LIP back to mission
+
+EFL:
+
+16. EFL descent
+17. EFL loiter
+18. EFL back to mission
+
+Missions 1-4 are single flights. Missions 5-8 use one in-flight interrupt and resume; other phases need a new flight if you want to check them. Missions 11-18 are branches from one state: one flight can take only one branch.
 
 Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from this suite and records whether previously verified behaviour still works.
 
@@ -106,8 +116,8 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Standalone checklist: this app does not control or talk to SkyCommand
 - Read the procedure here, fly the test in SkyCommand, then record **PASS** / **FAIL** / **BLOCKED** / **NOT TESTED** plus Notes / Observations
 - **Next test** after each result
-- 77 built-in tests from the Task / Element / Operation matrix (Deployed on hive, Corridor, Viewpoint, Loiter, PostCTL, LIP, EFL, RTL × Complete, arm, mission, loiter, POSCTL, EFL, Land, Return to Hive, RTL)
-- Mission walkthroughs with step-by-step results
+- 18 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, and EFL)
+- Mission walkthroughs with step-by-step instructions and one score per mission
 - Test runs that store optional software-version labels and `.deb` artifact names
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
@@ -164,8 +174,8 @@ Each run copies the current catalog so the tester records the same suite against
 - **Delete** is next to Export PDF on the Test runs list and on the run page. Use it to remove a run you did not do.
 - CSV and JSON exports stay available on the run page for spreadsheet or archive use.
 
-The catalog matrix shows which Task / Element / Operation cases exist. Blue cells marked — are tests in the suite; they are not score boxes. Scoring happens only inside a test run.
+The catalog lists the 18 missions. Scoring happens only inside a test run.
 
 ## Adding tests later
 
-Use **Test catalog → Add test**, or add a Task / Element / Operation row in `lib/catalog.ts` and (optionally) a mission in `lib/missions.ts`. New tests are added to existing runs as Not Tested.
+Use **Test catalog → Add test**, or add a mission in `lib/suite.ts`. New missions are added to existing runs as Not Tested.

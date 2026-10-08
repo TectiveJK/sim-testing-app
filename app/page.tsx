@@ -56,7 +56,7 @@ export default function DashboardPage() {
             <CardTitle className="text-3xl">{catalog.tests.length}</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Individual Task / Element / Operation tests, plus {catalog.missions.length} mission scenarios.
+            Official condensed suite: {catalog.tests.length} missions to fly and score.
           </CardContent>
         </Card>
         <Card>

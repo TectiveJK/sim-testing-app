@@ -37,6 +37,7 @@ export interface TestCase {
 export interface MissionStep {
   testCaseId: string;
   instruction: string;
+  label?: string;
 }
 
 export interface Mission {

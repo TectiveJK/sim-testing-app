@@ -43,7 +43,6 @@ function RunDetailInner() {
   const run = store.runs.find((item) => item.id === id);
   const [query, setQuery] = useState("");
   const [state, setState] = useState("all");
-  const [command, setCommand] = useState("all");
   const [status, setStatus] = useState<"all" | TestStatus>("all");
 
   const results = useMemo(
@@ -60,7 +59,6 @@ function RunDetailInner() {
     return catalog.tests.filter((test) => {
       const result = byTestId.get(test.id);
       if (state !== "all" && test.currentState !== state) return false;
-      if (command !== "all" && test.command !== command) return false;
       if (status !== "all" && result?.status !== status) return false;
       if (!needle) return true;
       return (
@@ -69,7 +67,7 @@ function RunDetailInner() {
         (result?.notes || "").toLowerCase().includes(needle)
       );
     });
-  }, [catalog.tests, query, state, command, status, byTestId]);
+  }, [catalog.tests, query, state, status, byTestId]);
 
   const selected = catalog.tests.find((test) => test.id === selectedId) ?? filtered[0];
   const selectedResult = selected ? byTestId.get(selected.id) : undefined;
@@ -216,23 +214,15 @@ function RunDetailInner() {
       />
 
       <ViewPanel when="execute" active={view}>
-          <div className="mb-3 grid gap-2 md:grid-cols-4">
+          <div className="mb-3 grid gap-2 md:grid-cols-3">
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search tests or notes"
+              placeholder="Search missions or notes"
             />
             <NativeSelect value={state} onChange={(event) => setState(event.target.value)}>
-              <option value="all">All tasks</option>
+              <option value="all">All categories</option>
               {catalog.states.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </NativeSelect>
-            <NativeSelect value={command} onChange={(event) => setCommand(event.target.value)}>
-              <option value="all">All operations</option>
-              {catalog.commands.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
@@ -254,7 +244,7 @@ function RunDetailInner() {
           <div className="grid gap-4 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Tests ({filtered.length})</CardTitle>
+                <CardTitle className="text-base">Missions ({filtered.length})</CardTitle>
               </CardHeader>
               <CardContent className="max-h-[72vh] space-y-1 overflow-auto">
                 {filtered.length === 0 ? (

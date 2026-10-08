@@ -1,3 +1,4 @@
+import { mergeCatalog } from "@/lib/catalog";
 import type { AppStore, CatalogPayload } from "@/lib/types";
 
 export interface AppData {
@@ -15,7 +16,10 @@ export type RunCounts = {
 };
 
 export function countResults(store: AppStore, runId: string): RunCounts {
-  const results = store.results.filter((result) => result.testRunId === runId);
+  const known = new Set(mergeCatalog(store.customTests).map((test) => test.id));
+  const results = store.results.filter(
+    (result) => result.testRunId === runId && known.has(result.testCaseId),
+  );
   const counts: RunCounts = {
     total: results.length,
     passed: 0,

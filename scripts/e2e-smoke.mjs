@@ -18,18 +18,17 @@ await page.addInitScript(() => {
 
 try {
   await page.goto(`${base}/catalog`, { waitUntil: "networkidle" });
-  await page.getByTestId("tab-list").click();
-  await page.waitForURL(/view=list/);
-  await page.waitForSelector('[data-testid="catalog-test-rtl-complete"]');
+  if (!page.url().includes("view=list")) {
+    await page.getByTestId("tab-list").click();
+    await page.waitForURL(/view=list/);
+  }
+  await page.waitForSelector('[data-testid="catalog-test-rtl-from-viewpoint"]');
   const firstTitle = await page.getByTestId("catalog-detail-title").innerText();
-  await page.getByTestId("catalog-test-rtl-complete").click();
-  await page.waitForFunction(
-    (previous) => document.querySelector("[data-testid=catalog-detail-title]")?.textContent !== previous,
-    firstTitle,
-  );
+  await page.getByTestId("catalog-test-rtl-from-viewpoint").click();
+  await page.waitForURL(/test=rtl-from-viewpoint/);
   const secondTitle = await page.getByTestId("catalog-detail-title").innerText();
   assert(firstTitle !== secondTitle, `Catalog list did not change detail (${firstTitle} -> ${secondTitle})`);
-  assert(secondTitle.includes("RTL"), `Expected RTL test, got ${secondTitle}`);
+  assert(secondTitle.includes("RTL"), `Expected RTL mission, got ${secondTitle}`);
 
   await page.goto(`${base}/artifacts`, { waitUntil: "networkidle" });
   const field = page.getByTestId("artifact-file-autonomy-node");
@@ -49,10 +48,10 @@ try {
   await page.getByTestId("tester").fill("Short Retest");
   await page.getByTestId("start-test-run").click();
   await page.waitForURL(/\/run\?id=[0-9a-f-]+/, { timeout: 15000 });
-  await page.waitForSelector('[data-testid="run-test-corridor-take-off-complete"]');
+  await page.waitForSelector('[data-testid="run-test-corridor-hive-to-hive"]');
 
   const initial = await page.getByTestId("result-title").innerText();
-  await page.getByTestId("run-test-rtl-complete").click();
+  await page.getByTestId("run-test-rtl-from-viewpoint").click();
   await page.waitForFunction(
     (previous) => document.querySelector("[data-testid=result-title]")?.textContent !== previous,
     initial,

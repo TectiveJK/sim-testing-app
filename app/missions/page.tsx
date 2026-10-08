@@ -19,7 +19,7 @@ export default function MissionsPage() {
       <PageHeader
         eyebrow="Mission-based testing"
         title="Scenarios"
-        description="A mission is an ordered checklist. Read each step here, do it in SkyCommand, then record the result and move to the next step."
+        description="Each item is one of the 18 condensed missions. Read the steps, fly them in SkyCommand, then record one result for the mission."
       />
       <div className="space-y-8">
         {[...grouped.entries()].map(([category, missions]) => (
@@ -36,14 +36,11 @@ export default function MissionsPage() {
                   </CardHeader>
                   <CardContent>
                     <ol className="mb-4 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
-                      {mission.steps.map((step) => {
-                        const test = catalog.tests.find((item) => item.id === step.testCaseId);
-                        return (
-                          <li key={step.testCaseId}>
-                            <span className="text-foreground">{test?.name || step.testCaseId}</span>
-                          </li>
-                        );
-                      })}
+                      {mission.steps.map((step, index) => (
+                        <li key={`${mission.id}-${index}`}>
+                          <span className="text-foreground">{step.label || step.instruction}</span>
+                        </li>
+                      ))}
                     </ol>
                     <LinkButton href={`/missions/${mission.id}`} variant="outline" size="sm">
                       Open mission
