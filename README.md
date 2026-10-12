@@ -66,7 +66,7 @@ In-flight interrupt and resume:
 5. In-flight loiter, then resume
 6. In-flight POSCTL, then resume
 7. In-flight EFL, then resume
-8. In-flight Land / LIP, then resume
+8. In-flight Land / LIP, then resume — press Land to start Land In Place, then press mission while it is still coming down
 
 Ground / hold:
 
@@ -75,19 +75,27 @@ Ground / hold:
 11. From loiter, leave hold
 12. From PostCTL, leave hold
 
-LIP:
+Land In Place (LIP) — the drone lands where it is, not on the hive:
 
 13. LIP descent
 14. After LIP landing
 15. LIP back to mission
 
-EFL:
+Emergency flight (EFL):
 
 16. EFL descent
 17. EFL loiter
 18. EFL back to mission
 
-Missions 1-4 are single flights. Missions 5-8 use one in-flight interrupt and resume; other phases need a new flight if you want to check them. Missions 11-18 are branches from one state: one flight can take only one branch.
+Missions 1-4 are single flights. Missions 5-8 stop the flight, then continue; other phases need a new flight if you want to check them. Missions 11-18 try several commands from one state: use a new flight for each command.
+
+Short names used in SkyCommand:
+
+- **LIP** = Land In Place (land where the drone is now, not on the hive)
+- **EFL** = Emergency Flight
+- **RTL** = Return to Launch
+- **POSCTL** = position control
+- **HL** = hive landing point
 
 ### Viewpoint swap to hive
 

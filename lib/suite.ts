@@ -17,8 +17,8 @@ export const CATEGORY_ORDER = [
   "Nominal flight",
   "In-flight interrupt and resume",
   "Ground / hold",
-  "LIP",
-  "EFL",
+  "Land In Place (LIP)",
+  "Emergency flight (EFL)",
 ];
 
 export const SUITE: SuiteMission[] = [
@@ -27,35 +27,35 @@ export const SUITE: SuiteMission[] = [
     name: "Corridor hive to hive",
     category: "Nominal flight",
     description:
-      "One flight from the hive: arm, take off, fly the corridor, return to HL, and land on the hive.",
+      "One normal flight: arm on the hive, take off, fly the corridor, come back to the hive landing point, and land on the hive.",
     expectedBehavior:
-      "The drone arms, completes each corridor segment in order, and lands on the hive without stalling or dropping into an unexpected fail-safe.",
+      "The drone arms, flies each part of the corridor in order, and lands on the hive. It should not freeze, stay in the previous mode, or go into an unexpected fail-safe.",
     procedure:
-      "In SkyCommand, arm from Deployed on hive / disarmed, then fly a corridor mission through Take-off, To First Waypoint, Main/any mission corridor, To HL, and Landing on hive. Confirm each segment completes before the next. Come back here and record one result for the whole flight.",
+      "In SkyCommand, arm the drone while it is sitting on the hive and disarmed. Start a corridor mission. Watch take-off, the flight to the first waypoint, the main corridor, the flight to the hive landing point (HL), and the landing on the hive. Each part should finish before the next starts. Come back here and record one PASS or FAIL for the whole flight.",
     steps: [
       {
         label: "Arm on hive",
-        instruction: "With the drone deployed on the hive and disarmed, issue arm in SkyCommand.",
+        instruction: "The drone is on the hive and disarmed. In SkyCommand, press arm.",
       },
       {
         label: "Take-off",
-        instruction: "Create the corridor mission, launch, and confirm take-off completes.",
+        instruction: "Create the corridor mission, start it, and wait until take-off finishes.",
       },
       {
         label: "To First Waypoint",
-        instruction: "Confirm transit to the first waypoint completes.",
+        instruction: "Wait until the drone reaches the first waypoint.",
       },
       {
         label: "Main corridor",
-        instruction: "Fly the planned corridor and confirm it completes.",
+        instruction: "Let the drone fly the planned corridor and wait until that part finishes.",
       },
       {
         label: "To HL",
-        instruction: "Confirm transit to the hive landing (HL) point completes.",
+        instruction: "Wait until the drone reaches the hive landing point (HL).",
       },
       {
         label: "Landing on hive",
-        instruction: "Confirm landing on the hive completes and the drone disarms as expected.",
+        instruction: "Wait until the drone lands on the hive and disarms.",
       },
     ],
   },
@@ -81,14 +81,14 @@ export const SUITE: SuiteMission[] = [
     id: "return-to-hive-from-viewpoint",
     name: "Return to Hive from viewpoint transit",
     category: "Nominal flight",
-    description: "While flying to a viewpoint, command Return to Hive.",
-    expectedBehavior: "The drone aborts viewpoint transit and returns to the hive.",
+    description: "While a drone is flying to a viewpoint, send it back to the hive with Return to Hive.",
+    expectedBehavior: "The drone stops going to the viewpoint and flies back to the hive.",
     procedure:
-      "In SkyCommand, start a flight to a viewpoint. While in Viewpoint / to viewpoint, issue Return to Hive and confirm the drone returns. Record one result.",
+      "In SkyCommand, start a flight to a viewpoint. While the drone is still on the way (Viewpoint / to viewpoint), press Return to Hive. Watch it turn around and go to the hive. Come back here and record one PASS or FAIL.",
     steps: [
       {
         label: "Return to Hive",
-        instruction: "While flying to a viewpoint, command Return to Hive and confirm the drone returns to the hive.",
+        instruction: "While the drone is flying to a viewpoint, press Return to Hive and watch it go back to the hive.",
       },
     ],
   },
@@ -96,18 +96,20 @@ export const SUITE: SuiteMission[] = [
     id: "rtl-from-viewpoint",
     name: "RTL from viewpoint transit",
     category: "Nominal flight",
-    description: "While flying to a viewpoint, command RTL, then confirm RTL itself completes.",
-    expectedBehavior: "The drone enters RTL from viewpoint transit and RTL finishes cleanly.",
+    description:
+      "While a drone is flying to a viewpoint, press RTL (Return to Launch), then wait until that return finishes.",
+    expectedBehavior:
+      "The drone starts Return to Launch from the viewpoint flight and RTL finishes normally.",
     procedure:
-      "In SkyCommand, start a flight to a viewpoint. While in Viewpoint / to viewpoint, issue RTL. Then confirm RTL completes. Record one result for both steps.",
+      "In SkyCommand, start a flight to a viewpoint. While the drone is still on the way, press RTL (Return to Launch). Then wait until RTL itself finishes. Come back here and record one PASS or FAIL for both steps.",
     steps: [
       {
         label: "Issue RTL",
-        instruction: "While flying to a viewpoint, command RTL.",
+        instruction: "While the drone is flying to a viewpoint, press RTL (Return to Launch).",
       },
       {
         label: "RTL completes",
-        instruction: "Confirm RTL completes and the drone finishes the return.",
+        instruction: "Wait until Return to Launch finishes.",
       },
     ],
   },
@@ -116,20 +118,20 @@ export const SUITE: SuiteMission[] = [
     name: "In-flight loiter, then resume",
     category: "In-flight interrupt and resume",
     description:
-      "From an in-flight element, command loiter, then resume the mission. Covers Take-off, To First Waypoint, Main/any mission corridor, To HL, to viewpoint, waiting for release, and To hive from swap.",
+      "During a flight, make the drone hover (loiter), then send it back to the mission.",
     expectedBehavior:
-      "The drone holds in loiter from the in-flight element, then resumes the plan when mission is commanded.",
+      "The drone stops and hovers, then continues the original mission when you press mission.",
     procedure:
-      "Prefer Main/any mission corridor for the first flight. Issue loiter, confirm the hold, then command mission and confirm the plan resumes. If you also check other in-flight elements, use separate flights. Score PASS only if every phase you flew resumed cleanly. Record one result.",
+      "In SkyCommand, start a corridor (the main corridor part is the easiest). While it is flying, press loiter and check that it hovers. Then press mission and check that it continues the plan. You can also try this during take-off, to the first waypoint, to HL, to a viewpoint, waiting for release, or to hive from swap — use a new flight for each. Record one PASS or FAIL. Mark PASS only if every phase you actually flew hovered and then continued.",
     steps: [
       {
         label: "Loiter",
         instruction:
-          "From an in-flight element (Take-off, To First Waypoint, Main/any mission corridor, To HL, to viewpoint, waiting for release, or To hive from swap), command loiter.",
+          "While the drone is flying (take-off, first waypoint, corridor, to HL, to viewpoint, waiting for release, or to hive from swap), press loiter.",
       },
       {
         label: "Resume mission",
-        instruction: "From loiter, command mission and confirm the plan resumes.",
+        instruction: "While it is hovering, press mission and check that it continues the plan.",
       },
     ],
   },
@@ -138,19 +140,19 @@ export const SUITE: SuiteMission[] = [
     name: "In-flight POSCTL, then resume",
     category: "In-flight interrupt and resume",
     description:
-      "From an in-flight element, command POSCTL, then resume the mission from PostCTL.",
+      "During a flight, switch to position control (POSCTL), then send the drone back to the mission.",
     expectedBehavior:
-      "The drone enters position control, then resumes the plan from PostCTL / In control.",
+      "The drone goes into position control. When you press mission from PostCTL / In control, it continues the original plan.",
     procedure:
-      "Prefer Main/any mission corridor. Issue POSCTL, confirm PostCTL / In control, then command mission. Other in-flight elements need separate flights. Record one result.",
+      "In SkyCommand, start a corridor. While it is flying, press POSCTL (position control) and check that SkyCommand shows PostCTL / In control. Then press mission and check that it continues. Other parts of the flight can be tried on new flights. Come back here and record one PASS or FAIL.",
     steps: [
       {
         label: "POSCTL",
-        instruction: "From an in-flight element, command POSCTL.",
+        instruction: "While the drone is flying, press POSCTL (position control).",
       },
       {
         label: "Resume mission",
-        instruction: "From PostCTL / In control, command mission and confirm the plan resumes.",
+        instruction: "When SkyCommand shows PostCTL / In control, press mission and check that the plan continues.",
       },
     ],
   },
@@ -158,19 +160,20 @@ export const SUITE: SuiteMission[] = [
     id: "inflight-efl-then-resume",
     name: "In-flight EFL, then resume",
     category: "In-flight interrupt and resume",
-    description: "From an in-flight element, trigger EFL, then resume the mission during EFL descent.",
+    description:
+      "During a flight, start Emergency Flight (EFL), then send the drone back to the mission while it is still descending.",
     expectedBehavior:
-      "EFL starts from the in-flight element. Commanding mission during EFL / Descending returns the drone to the plan.",
+      "Emergency Flight starts. Pressing mission during EFL descent puts the drone back on the original plan.",
     procedure:
-      "Prefer Main/any mission corridor. Issue EFL, confirm EFL / Descending, then command mission. Other in-flight elements need separate flights. Record one result.",
+      "In SkyCommand, start a corridor. While it is flying, press EFL (Emergency Flight). Check that it is descending in EFL. Then press mission and check that it continues the plan. Other parts of the flight can be tried on new flights. Come back here and record one PASS or FAIL.",
     steps: [
       {
         label: "EFL",
-        instruction: "From an in-flight element, command EFL.",
+        instruction: "While the drone is flying, press EFL (Emergency Flight).",
       },
       {
         label: "Resume mission",
-        instruction: "During EFL / Descending, command mission and confirm the plan resumes.",
+        instruction: "While it is descending in Emergency Flight, press mission and check that the plan continues.",
       },
     ],
   },
@@ -179,20 +182,21 @@ export const SUITE: SuiteMission[] = [
     name: "In-flight Land / LIP, then resume",
     category: "In-flight interrupt and resume",
     description:
-      "From an in-flight element that supports Land, command Land into LIP, then resume during LIP descent. Take-off has no Land case.",
+      "During a flight, press Land. That starts Land In Place (LIP): the drone lands where it is, not on the hive. Then send it back to the mission while it is still coming down. Do not use this during take-off.",
     expectedBehavior:
-      "Land starts LIP descent. Commanding mission during LIP / Descending returns the drone to the plan.",
+      "Land starts a Land In Place descent. Pressing mission while it is still coming down puts the drone back on the original plan.",
     procedure:
-      "Prefer Main/any mission corridor. Issue Land, confirm LIP / Descending, then command mission. Also valid from To First Waypoint, To HL, to viewpoint, waiting for release, and To hive from swap. Record one result.",
+      "In SkyCommand, start a corridor. While it is flying the main corridor, press Land. The drone should start Land In Place (landing where it is now). While it is still coming down, press mission and check that it continues the plan. You can also try this on the way to the first waypoint, to HL, to a viewpoint, waiting for release, or to hive from swap. Come back here and record one PASS or FAIL.",
     steps: [
       {
         label: "Land",
         instruction:
-          "From To First Waypoint, Main/any mission corridor, To HL, to viewpoint, waiting for release, or To hive from swap, command Land.",
+          "While flying to the first waypoint, on the corridor, to HL, to a viewpoint, waiting for release, or to hive from swap, press Land. This starts Land In Place.",
       },
       {
         label: "Resume from LIP",
-        instruction: "During LIP / Descending, command mission and confirm the plan resumes.",
+        instruction:
+          "While the drone is still coming down in Land In Place, press mission and check that it continues the plan.",
       },
     ],
   },
@@ -200,14 +204,16 @@ export const SUITE: SuiteMission[] = [
     id: "posctl-from-hive",
     name: "POSCTL from the hive",
     category: "Ground / hold",
-    description: "From Deployed on hive / disarmed, command POSCTL. This is separate from arm.",
-    expectedBehavior: "The drone enters position control from the disarmed hive state without an unexpected arm or take-off.",
+    description:
+      "The drone is on the hive and disarmed. Switch to position control (POSCTL). Do not arm it for this test.",
+    expectedBehavior:
+      "The drone goes into position control while still on the hive. It should not arm or take off by itself.",
     procedure:
-      "In SkyCommand, with the drone deployed on the hive and disarmed, issue POSCTL. Confirm the mode change. Record one result.",
+      "In SkyCommand, leave the drone on the hive and disarmed. Press POSCTL (position control). Check that the mode changes and that it does not take off. Come back here and record one PASS or FAIL.",
     steps: [
       {
         label: "POSCTL on hive",
-        instruction: "With the drone deployed on the hive and disarmed, command POSCTL.",
+        instruction: "The drone is on the hive and disarmed. Press POSCTL (position control).",
       },
     ],
   },
@@ -215,14 +221,14 @@ export const SUITE: SuiteMission[] = [
     id: "arm-from-postctl",
     name: "Arm from PostCTL",
     category: "Ground / hold",
-    description: "From PostCTL / In control, issue arm.",
-    expectedBehavior: "The drone arms from PostCTL without leaving control unexpectedly.",
+    description: "The drone is already in position control (PostCTL / In control). Arm it.",
+    expectedBehavior: "The drone arms and stays under control. It should not jump to an unexpected mode.",
     procedure:
-      "In SkyCommand, put the drone in PostCTL / In control, then issue arm. Record one result.",
+      "In SkyCommand, put the drone in PostCTL / In control (position control). Then press arm. Come back here and record one PASS or FAIL.",
     steps: [
       {
         label: "Arm",
-        instruction: "From PostCTL / In control, issue arm.",
+        instruction: "When SkyCommand shows PostCTL / In control, press arm.",
       },
     ],
   },
@@ -230,136 +236,168 @@ export const SUITE: SuiteMission[] = [
     id: "loiter-leave-hold",
     name: "From loiter, leave hold",
     category: "Ground / hold",
-    description: "From loiter, command POSCTL, EFL, or Land. One flight can take only one branch.",
+    description:
+      "The drone is hovering (loiter). From there, try position control, Emergency Flight, or Land. Use a new flight for each command.",
     expectedBehavior:
-      "Each commanded exit leaves loiter and enters the expected POSCTL, EFL, or Land behaviour.",
+      "Each command takes the drone out of hover into POSCTL, Emergency Flight, or Land, as you asked.",
     procedure:
-      "Put the drone in loiter. Fly POSCTL, EFL, and Land as separate branches (new flight if needed). Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, put the drone in loiter (hover). Then try these on separate flights: POSCTL, EFL (Emergency Flight), and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "Loiter -> POSCTL", instruction: "From loiter, command POSCTL." },
-      { label: "Loiter -> EFL", instruction: "From loiter, command EFL." },
-      { label: "Loiter -> Land", instruction: "From loiter, command Land." },
+      { label: "Loiter -> POSCTL", instruction: "While hovering, press POSCTL (position control)." },
+      { label: "Loiter -> EFL", instruction: "While hovering, press EFL (Emergency Flight)." },
+      { label: "Loiter -> Land", instruction: "While hovering, press Land." },
     ],
   },
   {
     id: "postctl-leave-hold",
     name: "From PostCTL, leave hold",
     category: "Ground / hold",
-    description: "From PostCTL / In control, command loiter, EFL, or Land. One flight can take only one branch.",
+    description:
+      "The drone is in position control (PostCTL / In control). From there, try loiter, Emergency Flight, or Land. Use a new flight for each command.",
     expectedBehavior:
-      "Each commanded exit leaves PostCTL and enters the expected loiter, EFL, or Land behaviour.",
+      "Each command takes the drone out of position control into hover, Emergency Flight, or Land, as you asked.",
     procedure:
-      "Put the drone in PostCTL / In control. Fly loiter, EFL, and Land as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, put the drone in PostCTL / In control. Then try these on separate flights: loiter, EFL (Emergency Flight), and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "PostCTL -> loiter", instruction: "From PostCTL / In control, command loiter." },
-      { label: "PostCTL -> EFL", instruction: "From PostCTL / In control, command EFL." },
-      { label: "PostCTL -> Land", instruction: "From PostCTL / In control, command Land." },
+      { label: "PostCTL -> loiter", instruction: "In PostCTL / In control, press loiter." },
+      { label: "PostCTL -> EFL", instruction: "In PostCTL / In control, press EFL (Emergency Flight)." },
+      { label: "PostCTL -> Land", instruction: "In PostCTL / In control, press Land." },
     ],
   },
   {
     id: "lip-descent",
     name: "LIP descent",
-    category: "LIP",
+    category: "Land In Place (LIP)",
     description:
-      "While LIP is descending, command Complete, loiter, POSCTL, EFL, or Land. One flight can take only one branch.",
+      "LIP means Land In Place: the drone lands where it is, not on the hive. Start that landing, and while it is still coming down, try one command at a time.",
     expectedBehavior:
-      "Each commanded action from LIP / Descending is accepted and the drone does not stall in LIP.",
+      "While the drone is coming down in Land In Place, it should accept Complete, loiter, POSCTL, EFL, or Land, and it should not get stuck in LIP.",
     procedure:
-      "Trigger LIP so the drone is in LIP / Descending. Fly Complete, loiter, POSCTL, EFL, and Land as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, fly a mission, then press Land so the drone starts Land In Place (it lands where it is now). While it is still coming down, try these on separate flights: let it finish landing (Complete), loiter, POSCTL, EFL (Emergency Flight), and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "Complete", instruction: "During LIP / Descending, let LIP complete." },
-      { label: "loiter", instruction: "During LIP / Descending, command loiter." },
-      { label: "POSCTL", instruction: "During LIP / Descending, command POSCTL." },
-      { label: "EFL", instruction: "During LIP / Descending, command EFL." },
-      { label: "Land", instruction: "During LIP / Descending, command Land." },
+      { label: "Complete", instruction: "While it is coming down in Land In Place, let the landing finish." },
+      { label: "loiter", instruction: "While it is coming down in Land In Place, press loiter." },
+      { label: "POSCTL", instruction: "While it is coming down in Land In Place, press POSCTL." },
+      { label: "EFL", instruction: "While it is coming down in Land In Place, press EFL (Emergency Flight)." },
+      { label: "Land", instruction: "While it is coming down in Land In Place, press Land again." },
     ],
   },
   {
     id: "after-lip-landing",
     name: "After LIP landing",
-    category: "LIP",
+    category: "Land In Place (LIP)",
     description:
-      "After LIP has landed and disarmed, command arm, mission, POSCTL, or EFL. One flight can take only one branch.",
+      "LIP means Land In Place. Let that landing finish so the drone is on the ground and disarmed. Then try arm, mission, position control, or Emergency Flight. Use a new attempt for each command.",
     expectedBehavior:
-      "Each command from LIP / Landed (disarmed) is accepted. Arm, mission, POSCTL, and EFL do not leave the drone stuck on the ground in LIP.",
+      "From the ground after Land In Place, arm, mission, POSCTL, and EFL should work. The drone should not stay stuck on the ground in LIP.",
     procedure:
-      "Complete a LIP landing so the drone is Landed (disarmed). Fly arm, mission, POSCTL, and EFL as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, start Land In Place and let the drone land and disarm. Then try these on separate attempts: arm, mission, POSCTL, and EFL (Emergency Flight). Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "arm", instruction: "After LIP / Landed (disarmed), issue arm." },
-      { label: "mission", instruction: "After LIP / Landed (disarmed), command mission." },
-      { label: "POSCTL", instruction: "After LIP / Landed (disarmed), command POSCTL." },
-      { label: "EFL", instruction: "After LIP / Landed (disarmed), command EFL." },
+      { label: "arm", instruction: "After Land In Place has landed and disarmed, press arm." },
+      { label: "mission", instruction: "After Land In Place has landed and disarmed, press mission." },
+      { label: "POSCTL", instruction: "After Land In Place has landed and disarmed, press POSCTL." },
+      { label: "EFL", instruction: "After Land In Place has landed and disarmed, press EFL (Emergency Flight)." },
     ],
   },
   {
     id: "lip-back-to-mission",
     name: "LIP back to mission",
-    category: "LIP",
+    category: "Land In Place (LIP)",
     description:
-      "While returning from LIP to the mission, command Complete, loiter, POSCTL, EFL, or Land. One flight can take only one branch.",
+      "LIP means Land In Place: the drone lands where it is, not on the hive. Start LIP, then cancel it so the drone goes back to the original mission. While it is going back, try one command at a time.",
     expectedBehavior:
-      "LIP / Back to mission can complete, and each interrupt during recovery is accepted.",
+      "The drone should leave Land In Place and rejoin the mission. If you interrupt that return, it should accept the command and not get stuck in LIP.",
     procedure:
-      "Abort LIP so the drone is in LIP / Back to mission. Fly Complete, loiter, POSCTL, EFL, and Land as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, fly a mission (a corridor is fine). Press Land so the drone starts Land In Place and begins to come down. Before it finishes landing, cancel LIP / send it back to the mission. SkyCommand should show LIP / Back to mission. Then try these on separate flights: let the return finish (Complete), loiter, POSCTL, EFL (Emergency Flight), and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "Complete", instruction: "From LIP / Back to mission, confirm the return to the plan completes." },
-      { label: "loiter", instruction: "From LIP / Back to mission, command loiter." },
-      { label: "POSCTL", instruction: "From LIP / Back to mission, command POSCTL." },
-      { label: "EFL", instruction: "From LIP / Back to mission, command EFL." },
-      { label: "Land", instruction: "From LIP / Back to mission, command Land." },
+      {
+        label: "Complete",
+        instruction: "Cancel Land In Place so the drone goes back to the mission, and wait until that return finishes.",
+      },
+      {
+        label: "loiter",
+        instruction: "While the drone is going back from Land In Place to the mission, press loiter.",
+      },
+      {
+        label: "POSCTL",
+        instruction: "While the drone is going back from Land In Place to the mission, press POSCTL.",
+      },
+      {
+        label: "EFL",
+        instruction: "While the drone is going back from Land In Place to the mission, press EFL (Emergency Flight).",
+      },
+      {
+        label: "Land",
+        instruction: "While the drone is going back from Land In Place to the mission, press Land.",
+      },
     ],
   },
   {
     id: "efl-descent",
     name: "EFL descent",
-    category: "EFL",
+    category: "Emergency flight (EFL)",
     description:
-      "While EFL is descending, command Complete, loiter, POSCTL, EFL, or Land. One flight can take only one branch.",
+      "EFL means Emergency Flight. Start it, and while the drone is still coming down, try one command at a time.",
     expectedBehavior:
-      "Each commanded action from EFL / Descending is accepted and the drone does not stall in EFL.",
+      "While the drone is descending in Emergency Flight, it should accept Complete, loiter, POSCTL, EFL, or Land, and it should not get stuck in EFL.",
     procedure:
-      "Trigger EFL so the drone is in EFL / Descending. Fly Complete, loiter, POSCTL, EFL, and Land as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, fly a mission, then press EFL (Emergency Flight). While the drone is still coming down, try these on separate flights: let Emergency Flight finish (Complete), loiter, POSCTL, EFL again, and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "Complete", instruction: "During EFL / Descending, let EFL complete." },
-      { label: "loiter", instruction: "During EFL / Descending, command loiter." },
-      { label: "POSCTL", instruction: "During EFL / Descending, command POSCTL." },
-      { label: "EFL", instruction: "During EFL / Descending, command EFL again." },
-      { label: "Land", instruction: "During EFL / Descending, command Land." },
+      { label: "Complete", instruction: "While it is coming down in Emergency Flight, let that descent finish." },
+      { label: "loiter", instruction: "While it is coming down in Emergency Flight, press loiter." },
+      { label: "POSCTL", instruction: "While it is coming down in Emergency Flight, press POSCTL." },
+      { label: "EFL", instruction: "While it is coming down in Emergency Flight, press EFL again." },
+      { label: "Land", instruction: "While it is coming down in Emergency Flight, press Land." },
     ],
   },
   {
     id: "efl-loiter",
     name: "EFL loiter",
-    category: "EFL",
+    category: "Emergency flight (EFL)",
     description:
-      "From EFL loiter, command mission, POSCTL, EFL, or Land. One flight can take only one branch.",
+      "The drone is hovering after Emergency Flight (EFL loiter). From there, try mission, position control, Emergency Flight, or Land. Use a new flight for each command.",
     expectedBehavior:
-      "Each commanded exit from EFL / Loiter is accepted, including resume mission.",
+      "Each command takes the drone out of Emergency Flight hover, including going back to the mission.",
     procedure:
-      "Put the drone in EFL / Loiter. Fly mission, POSCTL, EFL, and Land as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, put the drone in EFL / Loiter (hover after Emergency Flight). Then try these on separate flights: mission, POSCTL, EFL, and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "mission", instruction: "From EFL / Loiter, command mission." },
-      { label: "POSCTL", instruction: "From EFL / Loiter, command POSCTL." },
-      { label: "EFL", instruction: "From EFL / Loiter, command EFL." },
-      { label: "Land", instruction: "From EFL / Loiter, command Land." },
+      { label: "mission", instruction: "From Emergency Flight hover, press mission." },
+      { label: "POSCTL", instruction: "From Emergency Flight hover, press POSCTL." },
+      { label: "EFL", instruction: "From Emergency Flight hover, press EFL again." },
+      { label: "Land", instruction: "From Emergency Flight hover, press Land." },
     ],
   },
   {
     id: "efl-back-to-mission",
     name: "EFL back to mission",
-    category: "EFL",
+    category: "Emergency flight (EFL)",
     description:
-      "While returning from EFL to the mission, command Complete, loiter, POSCTL, EFL, or Land. One flight can take only one branch.",
+      "Start Emergency Flight, then send the drone back to the original mission. While it is going back, try one command at a time.",
     expectedBehavior:
-      "EFL / Back to mission can complete, and each interrupt during recovery is accepted.",
+      "The drone should leave Emergency Flight and rejoin the mission. If you interrupt that return, it should accept the command and not get stuck in EFL.",
     procedure:
-      "Return from EFL so the drone is in EFL / Back to mission. Fly Complete, loiter, POSCTL, EFL, and Land as separate branches. Score PASS only if every branch you flew behaved as expected. Record one result.",
+      "In SkyCommand, start Emergency Flight, then send the drone back to the mission. SkyCommand should show EFL / Back to mission. Then try these on separate flights: let the return finish (Complete), loiter, POSCTL, EFL, and Land. Come back here and record one PASS or FAIL. Mark PASS only if every command you actually flew worked.",
     steps: [
-      { label: "Complete", instruction: "From EFL / Back to mission, confirm the return to the plan completes." },
-      { label: "loiter", instruction: "From EFL / Back to mission, command loiter." },
-      { label: "POSCTL", instruction: "From EFL / Back to mission, command POSCTL." },
-      { label: "EFL", instruction: "From EFL / Back to mission, command EFL." },
-      { label: "Land", instruction: "From EFL / Back to mission, command Land." },
+      {
+        label: "Complete",
+        instruction: "Send the drone back from Emergency Flight to the mission, and wait until that return finishes.",
+      },
+      {
+        label: "loiter",
+        instruction: "While the drone is going back from Emergency Flight to the mission, press loiter.",
+      },
+      {
+        label: "POSCTL",
+        instruction: "While the drone is going back from Emergency Flight to the mission, press POSCTL.",
+      },
+      {
+        label: "EFL",
+        instruction: "While the drone is going back from Emergency Flight to the mission, press EFL.",
+      },
+      {
+        label: "Land",
+        instruction: "While the drone is going back from Emergency Flight to the mission, press Land.",
+      },
     ],
   },
 ];
