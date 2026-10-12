@@ -107,7 +107,7 @@ Whenever SkyCommand / SIM software or drone software is updated, the tester crea
 
 The app keeps a history of previous executions so a function that passed on one release can be compared with the same function after a later release. For example, Return to Launch after GCS connection loss may pass on SkyCommand 1.2.0 / Drone 3.4.1 and fail on SkyCommand 1.3.0 / Drone 3.4.2.
 
-After some or all tests in a run have been scored, the tester can use **Export PDF** to download a shareable report for other testers or reviewers. The PDF includes software versions, `.deb` artifacts, pass/fail counts, recorded results with notes, and the tests that are still open.
+After some or all tests in a run have been scored, the tester can use **Export PDF** to download a shareable report for other testers or reviewers. The PDF includes software versions, `.deb` artifacts, pass/fail counts, a **Failed tests** section with the notes written for each failed test, recorded results, and the tests that are still open.
 
 A test run that was started by mistake, or that the tester did not actually fly, can be removed with **Delete** on the Test runs page. The button sits next to Export PDF. Confirming delete removes that run and all of its results.
 
@@ -184,7 +184,7 @@ Then commit the updated `docs/` folder.
 
 Each run copies the current catalog so the tester records the same suite against one labelled software version. SkyCommand is used only on the other monitor to fly the test.
 
-- **Export PDF** appears after at least one test is scored. Use it to share a partial or complete report.
+- **Export PDF** appears after at least one test is scored. Use it to share a partial or complete report. Failed tests include the notes written for that test.
 - **Delete** is next to Export PDF on the Test runs list and on the run page. Use it to remove a run you did not do.
 - CSV and JSON exports stay available on the run page for spreadsheet or archive use.
 

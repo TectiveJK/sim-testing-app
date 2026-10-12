@@ -1,4 +1,25 @@
+import { inflateSync } from "node:zlib";
 import { chromium } from "playwright";
+
+function pdfPlainText(bytes) {
+  const latin = bytes.toString("latin1");
+  const parts = [];
+  for (const match of latin.matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)) {
+    const raw = Buffer.from(match[1], "latin1");
+    try {
+      parts.push(inflateSync(raw));
+    } catch {
+      parts.push(raw);
+    }
+  }
+  const content = Buffer.concat(parts).toString("latin1");
+  const texts = [];
+  for (const match of content.matchAll(/<([0-9A-Fa-f]+)>/g)) {
+    const hex = match[1].length % 2 ? `${match[1]}0` : match[1];
+    texts.push(Buffer.from(hex, "hex").toString("latin1"));
+  }
+  return texts.join("\n");
+}
 
 const base = process.env.APP_URL || "http://127.0.0.1:43147";
 const errors = [];
@@ -58,8 +79,10 @@ try {
   );
   const after = await page.getByTestId("result-title").innerText();
   assert(after.includes("RTL"), `Execute panel did not switch, stayed ${after}`);
-  await page.getByRole("button", { name: "PASS", exact: true }).click();
-  await page.waitForTimeout(300);
+  const failNote = "LIP never rejoined corridor";
+  await page.getByTestId("result-notes").fill(failNote);
+  await page.getByRole("button", { name: "FAIL", exact: true }).click();
+  await page.waitForTimeout(400);
 
   await page.waitForSelector('[data-testid="export-pdf"]');
   const [download] = await Promise.all([
@@ -71,8 +94,13 @@ try {
   const pdfPath = await download.path();
   assert(pdfPath, "PDF download has no file path");
   const { readFileSync } = await import("node:fs");
-  const header = readFileSync(pdfPath).subarray(0, 4).toString();
+  const pdfBytes = readFileSync(pdfPath);
+  const header = pdfBytes.subarray(0, 4).toString();
   assert(header === "%PDF", `Export did not return a PDF (${header})`);
+  const pdfText = pdfPlainText(pdfBytes);
+  assert(pdfText.includes("FAILED TESTS"), "PDF is missing the Failed tests section");
+  assert(pdfText.includes("Notes:"), "PDF is missing the Notes label under a failed test");
+  assert(pdfText.includes(failNote), `PDF is missing the failed-test notes (${failNote})`);
 
   await page.getByTestId("tab-matrix").click();
   await page.waitForURL(/view=matrix/);

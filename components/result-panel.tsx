@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { ArrowRight, Paperclip, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/status-badge";
@@ -30,6 +31,7 @@ export function ResultPanel({
   nextHref?: string;
 }) {
   const { saveResult, uploadAttachment, deleteAttachment } = useAppData();
+  const notesRef = useRef<HTMLTextAreaElement>(null);
   const stayHref = runHref(runId, { view: "execute", test: test.id });
   const afterScoreHref = nextHref || stayHref;
 
@@ -82,6 +84,7 @@ export function ResultPanel({
                     testRunId: runId,
                     testCaseId: test.id,
                     status,
+                    notes: notesRef.current?.value ?? result.notes,
                     tester,
                   });
                   window.location.assign(appPath(status === "not_tested" ? stayHref : afterScoreHref));
@@ -124,8 +127,10 @@ export function ResultPanel({
       >
         <Label htmlFor={`notes-${result.id}`}>Notes / Observations</Label>
         <Textarea
+          ref={notesRef}
           id={`notes-${result.id}`}
           name="notes"
+          data-testid="result-notes"
           defaultValue={result.notes}
           placeholder="What you saw in SkyCommand. Unexpected behaviour, errors, or anything worth keeping."
           className="min-h-24"

@@ -81,10 +81,20 @@ export async function buildRunPdf(store: AppStore, run: TestRun) {
     const result = byTestId.get(test.id);
     return result && result.status !== "not_tested";
   });
+  const failedTests = tests.filter((test) => byTestId.get(test.id)?.status === "failed");
   const remaining = tests.filter((test) => {
     const result = byTestId.get(test.id);
     return !result || result.status === "not_tested";
   });
+
+  if (failedTests.length > 0) {
+    writer.section(`Failed tests (${failedTests.length})`);
+    writer.muted("Each failed test includes the notes written for it.");
+    writer.gap(4);
+    for (const test of failedTests) {
+      writer.resultBlock(test.name, test.id, byTestId.get(test.id)!, { emphasizeNotes: true });
+    }
+  }
 
   writer.section(`Recorded results (${recordedTests.length})`);
   if (recordedTests.length === 0) {
@@ -261,11 +271,18 @@ class PdfWriter {
     });
   }
 
-  resultBlock(name: string, id: string, result: TestResult) {
+  resultBlock(
+    name: string,
+    id: string,
+    result: TestResult,
+    options: { emphasizeNotes?: boolean } = {},
+  ) {
     const notes = result.notes.trim();
     const attachments = result.attachments.map((item) => item.originalName).join(", ");
-    const noteLines = notes ? wrapText(notes, this.regular, 8.5, CONTENT_WIDTH - 12) : [];
-    const needed = 36 + noteLines.length * 11 + (attachments ? 12 : 0);
+    const showNotes = options.emphasizeNotes || Boolean(notes) || result.status === "failed";
+    const noteBody = notes || (result.status === "failed" ? "No notes written for this failed test." : "");
+    const noteLines = showNotes && noteBody ? wrapText(noteBody, this.regular, 8.5, CONTENT_WIDTH - 24) : [];
+    const needed = 36 + (showNotes ? 14 : 0) + noteLines.length * 11 + (attachments ? 12 : 0);
     this.ensure(needed);
     const color = STATUS_COLOR[result.status];
     this.page.drawRectangle({
@@ -303,10 +320,21 @@ class PdfWriter {
       );
       this.y -= 12;
     }
-    for (const line of noteLines) {
-      this.ensure(11);
-      this.page.drawText(line, { x: MARGIN + 12, y: this.y, size: 8.5, font: this.regular, color: INK });
-      this.y -= 11;
+    if (showNotes) {
+      this.ensure(14);
+      this.page.drawText("Notes:", {
+        x: MARGIN + 12,
+        y: this.y,
+        size: 8,
+        font: this.bold,
+        color: result.status === "failed" ? STATUS_COLOR.failed : MUTED,
+      });
+      this.y -= 12;
+      for (const line of noteLines) {
+        this.ensure(11);
+        this.page.drawText(line, { x: MARGIN + 24, y: this.y, size: 8.5, font: this.regular, color: INK });
+        this.y -= 11;
+      }
     }
     if (attachments) {
       this.ensure(12);
