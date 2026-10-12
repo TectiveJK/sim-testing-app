@@ -57,7 +57,7 @@ The catalog is **18 condensed missions**. Each mission groups Task / Element / O
 Nominal flight:
 
 1. Corridor hive to hive
-2. Viewpoint swap to hive
+2. Viewpoint swap to hive — in SkyCommand, create a viewpoint task for drone 1, start it, then deploy drone 2 with **Run this task now**. Drone 2 takes the viewpoint and drone 1 goes back to the hive.
 3. Return to Hive from viewpoint transit
 4. RTL from viewpoint transit
 

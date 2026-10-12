@@ -63,14 +63,17 @@ export const SUITE: SuiteMission[] = [
     id: "viewpoint-swap-to-hive",
     name: "Viewpoint swap to hive",
     category: "Nominal flight",
-    description: "From a viewpoint swap, send the drone back to the hive and confirm it completes.",
-    expectedBehavior: "The drone leaves the viewpoint swap and returns to the hive without remaining in the swap state.",
+    description:
+      "Create a viewpoint task for drone 1, then deploy drone 2 with Run this task now so the drones swap and drone 1 returns to the hive.",
+    expectedBehavior:
+      "When drone 1 goes to the viewpoint task, another drone takes its position (swap) to do the task and drone 1 goes back to the hive.",
     procedure:
-      "In SkyCommand, put the drone in Viewpoint / To hive from swap, command the return, and confirm it completes. Record one result.",
+      "In SkyCommand, create a viewpoint task for drone 1. Save the mission and start it. When drone 1 goes to the viewpoint, deploy drone 2 by pressing the \"Run this task now\" button (on your right in the task field there is a play button next to the word viewpoint. Press it to deploy a new drone).",
     steps: [
       {
-        label: "To hive from swap",
-        instruction: "From the viewpoint swap state, send the drone back to the hive and verify it returns.",
+        label: "Viewpoint swap",
+        instruction:
+          "In SkyCommand, create a viewpoint task for drone 1. Save the mission and start it. When drone 1 goes to the viewpoint, deploy drone 2 by pressing the \"Run this task now\" button (play button next to the word viewpoint) so a new drone is deployed.",
       },
     ],
   },
