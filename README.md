@@ -89,6 +89,12 @@ EFL:
 
 Missions 1-4 are single flights. Missions 5-8 use one in-flight interrupt and resume; other phases need a new flight if you want to check them. Missions 11-18 are branches from one state: one flight can take only one branch.
 
+### Viewpoint swap to hive
+
+**Procedure (do this in SkyCommand):** In SkyCommand, create a viewpoint task for drone 1. Save the mission and start it. When drone 1 goes to the viewpoint, deploy drone 2 by pressing the **Run this task now** button (on your right in the task field there is a play button next to the word viewpoint. Press it to deploy a new drone).
+
+**Expected result:** When drone 1 goes to the viewpoint task, another drone takes its position (swap) to do the task and drone 1 goes back to the hive.
+
 Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from this suite and records whether previously verified behaviour still works.
 
 The app keeps a history of previous executions so a function that passed on one release can be compared with the same function after a later release. For example, Return to Launch after GCS connection loss may pass on SkyCommand 1.2.0 / Drone 3.4.1 and fail on SkyCommand 1.3.0 / Drone 3.4.2.
