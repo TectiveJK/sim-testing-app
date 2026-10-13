@@ -19,7 +19,7 @@ export default function MissionsPage() {
       <PageHeader
         eyebrow="Mission-based testing"
         title="Scenarios"
-        description="Each item is one of the 19 condensed missions. Read the steps, fly them in SkyCommand, then record one result for the mission."
+        description="Each item is one of the 20 condensed missions. Read the steps, fly them in SkyCommand, then record one result for the mission."
       />
       <div className="space-y-8">
         {[...grouped.entries()].map(([category, missions]) => (

@@ -52,7 +52,7 @@ There is also a simple **Notes / Observations** field.
 
 Optional fields can still be stored with a run (software version labels, tester name, date, attachments) so later runs can be compared. Those labels are written by the tester. The app never reads them from SkyCommand.
 
-The catalog is **19 condensed missions**. Each mission groups Task / Element / Operation cases that can be flown together. The tester scores the mission once after flying its steps in SkyCommand.
+The catalog is **20 condensed missions**. Each mission groups Task / Element / Operation cases that can be flown together. The tester scores the mission once after flying its steps in SkyCommand.
 
 Nominal flight:
 
@@ -91,7 +91,11 @@ No fly zone:
 
 19. No fly zone violation — create a corridor, put a no fly zone between the corridor and the hive, then after take-off use **Go to** in front of the corridor. The drone should reach the Go to point by going around the no fly zone.
 
-Missions 1-4 and 19 are single flights. Missions 5-8 stop the flight, then continue; other phases need a new flight if you want to check them. Missions 11-18 try several commands from one state: use a new flight for each command.
+Look at:
+
+20. Look At Command — create a corridor in the SkyCommand Simulator with **Look at**, take the drone manual, move it a bit, then press mission again and check that it still looks at that point.
+
+Missions 1-4, 19 and 20 are single flights. Missions 5-8 stop the flight, then continue; other phases need a new flight if you want to check them. Missions 11-18 try several commands from one state: use a new flight for each command.
 
 Short names used in SkyCommand:
 
@@ -102,6 +106,7 @@ Short names used in SkyCommand:
 - **HL** = hive landing point
 - **Go to** = fly to a point you click on the map
 - **No fly zone** = an area the drone must not fly through
+- **Look at** = keep the camera / heading pointed at a chosen point
 
 ### Viewpoint swap to hive
 
@@ -114,6 +119,12 @@ Short names used in SkyCommand:
 **Procedure (do this in SkyCommand):** Create a corridor mission and between the corridor and the hive add a no fly zone location. Save the mission and start it. After arming the drone and it takes off, right-click in front of the corridor area and engage the **Go to** command. See if the drone violates the no fly zone location and, if it does, what it is doing after.
 
 **Expected result:** After the Go to command the drone reaches the Go to point going around the no fly zone location.
+
+### Look At Command
+
+**Procedure (do this in SkyCommand):** Create a corridor mission in the SkyCommand Simulator, with the drone following a flight path looking at a point with the **Look at** command. Then take it manual, move it a bit, and press mission again. Check if the drone still looks at the point you asked it to look with the **Look at** command.
+
+**Expected result:** After you command the drone to look at a certain point, until you will undo this command, it should look at that point.
 
 Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from this suite and records whether previously verified behaviour still works.
 
@@ -138,7 +149,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Standalone checklist: this app does not control or talk to SkyCommand
 - Read the procedure here, fly the test in SkyCommand, then record **PASS** / **FAIL** / **BLOCKED** / **NOT TESTED** plus Notes / Observations
 - **Next test** after each result
-- 19 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, and no fly zone)
+- 20 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, no fly zone, and Look at)
 - Mission walkthroughs with step-by-step instructions and one score per mission
 - Test runs that store optional software-version labels and the three last successful `.deb` artifact names
 - History and side-by-side run comparison for regressions
@@ -196,7 +207,7 @@ Each run copies the current catalog so the tester records the same suite against
 - **Delete** is next to Export PDF on the Test runs list and on the run page. Use it to remove a run you did not do.
 - CSV and JSON exports stay available on the run page for spreadsheet or archive use.
 
-The catalog lists the 19 missions. Scoring happens only inside a test run.
+The catalog lists the 20 missions. Scoring happens only inside a test run.
 
 ## Adding tests later
 

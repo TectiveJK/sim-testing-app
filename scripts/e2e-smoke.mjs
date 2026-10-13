@@ -67,6 +67,19 @@ try {
     !noFlyBody.toLowerCase().includes("geofence"),
     "Catalog still says geofence instead of no fly zone",
   );
+  await page.getByTestId("catalog-test-look-at-command").click();
+  await page.waitForURL(/test=look-at-command/);
+  const lookAtTitle = await page.getByTestId("catalog-detail-title").innerText();
+  assert(lookAtTitle.includes("Look At Command"), `Expected Look At Command, got ${lookAtTitle}`);
+  const lookAtBody = await page.locator("main").innerText();
+  assert(
+    lookAtBody.includes("Look at"),
+    "Look At Command procedure is missing the Look at command",
+  );
+  assert(
+    lookAtBody.includes("until you will undo this command"),
+    "Look At Command expected result is missing",
+  );
 
   await page.goto(`${base}/artifacts`, { waitUntil: "networkidle" });
   const webGround = await page.getByTestId("artifact-file-web-ground-control").inputValue();

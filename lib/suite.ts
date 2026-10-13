@@ -20,6 +20,7 @@ export const CATEGORY_ORDER = [
   "Land In Place (LIP)",
   "Emergency flight (EFL)",
   "No fly zone",
+  "Look at",
 ];
 
 export const SUITE: SuiteMission[] = [
@@ -433,6 +434,37 @@ export const SUITE: SuiteMission[] = [
       },
     ],
   },
+  {
+    id: "look-at-command",
+    name: "Look At Command",
+    category: "Look at",
+    description:
+      "Create a corridor in the SkyCommand Simulator with Look at, then take the drone manual, move it a bit, press mission again, and check that it still looks at the same point.",
+    expectedBehavior:
+      "After you command the drone to look at a certain point, until you will undo this command, it should look at that point.",
+    procedure:
+      "Create a corridor mission in the SkyCommand Simulator, with the drone following a flight path looking at a point with the Look at command. Then take it manual, move it a bit, and press mission again. Check if the drone still looks at the point you asked it to look with the Look at command. Come back here and record one PASS or FAIL.",
+    steps: [
+      {
+        label: "Corridor with Look at",
+        instruction:
+          "Create a corridor mission in the SkyCommand Simulator. Set the drone to follow the flight path looking at a point with the Look at command.",
+      },
+      {
+        label: "Manual",
+        instruction: "Take the drone manual and move it a bit.",
+      },
+      {
+        label: "Mission again",
+        instruction: "Press mission again.",
+      },
+      {
+        label: "Check Look at",
+        instruction:
+          "Check if the drone still looks at the point you asked it to look with the Look at command.",
+      },
+    ],
+  },
 ];
 
 {
@@ -440,7 +472,7 @@ export const SUITE: SuiteMission[] = [
   if (new Set(ids).size !== ids.length) {
     throw new Error("Duplicate suite mission ids");
   }
-  if (ids.length !== 19) {
-    throw new Error(`Expected 19 missions, got ${ids.length}`);
+  if (ids.length !== 20) {
+    throw new Error(`Expected 20 missions, got ${ids.length}`);
   }
 }
