@@ -45,14 +45,13 @@ function rewriteStoredGeofence(store: AppStore) {
   }
 
   const rank = (status: string) => (status === "not_tested" ? 0 : 1);
-  store.results.sort((a, b) => rank(b.status) - rank(a.status));
-  const seen = new Set<string>();
-  store.results = store.results.filter((result) => {
+  const preferred = new Map<string, (typeof store.results)[number]>();
+  for (const result of store.results) {
     const key = `${result.testRunId}::${result.testCaseId}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+    const current = preferred.get(key);
+    if (!current || rank(result.status) > rank(current.status)) preferred.set(key, result);
+  }
+  store.results = store.results.filter((result) => preferred.get(`${result.testRunId}::${result.testCaseId}`) === result);
 }
 
 export function normalizeStore(raw: Partial<AppStore> | null): AppStore {

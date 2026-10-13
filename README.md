@@ -101,6 +101,7 @@ Short names used in SkyCommand:
 - **POSCTL** = position control
 - **HL** = hive landing point
 - **Go to** = fly to a point you click on the map
+- **No fly zone** = an area the drone must not fly through
 
 ### Viewpoint swap to hive
 
