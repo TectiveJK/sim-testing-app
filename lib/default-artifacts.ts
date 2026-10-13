@@ -2,38 +2,35 @@ import type { DebArtifact } from "@/lib/types";
 
 export const DEFAULT_ARTIFACTS: DebArtifact[] = [
   {
-    id: "autonomy-node",
-    packageName: "autonomy-node",
-    filename: "autonomy-node_1.0.0+12a9d76-b2_amd64.deb",
-  },
-  {
-    id: "device-log-server",
-    packageName: "device-log-server",
-    filename: "device-log-server_1.0.0+12a9d76-b2_amd64.deb",
-  },
-  {
-    id: "landing-service",
-    packageName: "landing-service",
-    filename: "landing-service_1.0.0+12a9d76-b2_amd64.deb",
+    id: "web-ground-control",
+    packageName: "web-ground-control",
+    filename: "web-ground-control_0.0.1-b9c924f.deb",
   },
   {
     id: "mission-planner",
     packageName: "mission-planner",
-    filename: "mission-planner_1.0.0+12a9d76-b2_amd64.deb",
+    filename: "mission-planner_1.0.0+b9c924f-b29_amd64.deb",
   },
   {
-    id: "px4-log-registrar",
-    packageName: "px4-log-registrar",
-    filename: "px4-log-registrar_1.0.0+12a9d76-b2_amd64.deb",
-  },
-  {
-    id: "skycommand-db",
-    packageName: "skycommand-db",
-    filename: "skycommand-db_1.0.0+12a9d76-b2_amd64.deb",
-  },
-  {
-    id: "web-ground-control",
-    packageName: "web-ground-control",
-    filename: "web-ground-control_0.0.1-12a9d76.deb",
+    id: "tective-simulator",
+    packageName: "tective-simulator",
+    filename: "tective-simulator_0.1.0+b9c924f.b29_amd64.deb",
   },
 ];
+
+export function normalizeArtifacts(stored?: DebArtifact[] | null): DebArtifact[] {
+  const defaults = structuredClone(DEFAULT_ARTIFACTS);
+  if (!Array.isArray(stored) || stored.length === 0) return defaults;
+  const wanted = DEFAULT_ARTIFACTS.map((item) => item.packageName);
+  const have = stored.map((item) => item.packageName);
+  const sameSet = have.length === wanted.length && wanted.every((name) => have.includes(name));
+  if (!sameSet) return defaults;
+  return defaults.map((def) => {
+    const match = stored.find((item) => item.packageName === def.packageName);
+    return {
+      ...def,
+      id: match?.id || def.id,
+      filename: match?.filename || def.filename,
+    };
+  });
+}

@@ -125,15 +125,11 @@ A test run that was started by mistake, or that the tester did not actually fly,
 
 On Ubuntu, open the checklist from the **SIM Flight Testing** desktop icon after `npm run setup`. The source repository is **https://github.com/TectiveJK/sim-testing-app**. Other testers clone the repository and run `npm run setup` once so they get the same icon.
 
-It also stores the last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
+From now on testers only download these three last successful SkyCommand / SIM `.deb` artifacts. Each package name and filename is editable so the tester can write the updated build after a successful release:
 
-- autonomy-node_1.0.0+12a9d76-b2_amd64.deb
-- device-log-server_1.0.0+12a9d76-b2_amd64.deb
-- landing-service_1.0.0+12a9d76-b2_amd64.deb
-- mission-planner_1.0.0+12a9d76-b2_amd64.deb
-- px4-log-registrar_1.0.0+12a9d76-b2_amd64.deb
-- skycommand-db_1.0.0+12a9d76-b2_amd64.deb
-- web-ground-control_0.0.1-12a9d76.deb
+- web-ground-control_0.0.1-b9c924f.deb
+- mission-planner_1.0.0+b9c924f-b29_amd64.deb
+- tective-simulator_0.1.0+b9c924f.b29_amd64.deb
 
 New flight commands, drone functions, mission types, and SIM procedures can be added later without redesigning the application.
 
@@ -144,7 +140,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - **Next test** after each result
 - 19 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, and no fly zone)
 - Mission walkthroughs with step-by-step instructions and one score per mission
-- Test runs that store optional software-version labels and `.deb` artifact names
+- Test runs that store optional software-version labels and the three last successful `.deb` artifact names
 - History and side-by-side run comparison for regressions
 - Export PDF after some or all tests are scored, so a run can be shared with others
 - Delete a test run from the Test runs page when it was started by mistake

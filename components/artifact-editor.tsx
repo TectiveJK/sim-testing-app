@@ -33,7 +33,7 @@ export function ArtifactEditor({
               name={`packageName-${index}`}
               defaultValue={artifact.packageName}
               disabled={disabled}
-              placeholder="autonomy-node"
+              placeholder="web-ground-control"
             />
           </div>
           <div className="space-y-1.5">
@@ -46,7 +46,7 @@ export function ArtifactEditor({
               data-testid={`artifact-file-${artifact.packageName || artifact.id}`}
               defaultValue={artifact.filename}
               disabled={disabled}
-              placeholder="autonomy-node_1.0.0+12a9d76-b2_amd64.deb"
+              placeholder="web-ground-control_0.0.1-b9c924f.deb"
               className="font-mono text-xs sm:text-sm"
             />
           </div>

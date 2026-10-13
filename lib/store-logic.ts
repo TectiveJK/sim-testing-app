@@ -1,5 +1,5 @@
 import { mergeCatalog } from "@/lib/catalog";
-import { DEFAULT_ARTIFACTS } from "@/lib/default-artifacts";
+import { DEFAULT_ARTIFACTS, normalizeArtifacts } from "@/lib/default-artifacts";
 import { runTitle } from "@/lib/format";
 import { TEST_STATUSES, type AppStore, type DebArtifact, type TestCase, type TestResult, type TestRun, type TestStatus } from "@/lib/types";
 
@@ -58,7 +58,7 @@ export function normalizeStore(raw: Partial<AppStore> | null): AppStore {
   const base = emptyStore();
   if (!raw) return base;
   const store: AppStore = {
-    artifacts: Array.isArray(raw.artifacts) && raw.artifacts.length > 0 ? raw.artifacts : base.artifacts,
+    artifacts: normalizeArtifacts(raw.artifacts),
     testers: Array.isArray(raw.testers) ? raw.testers : [],
     runs: Array.isArray(raw.runs) ? raw.runs : [],
     results: Array.isArray(raw.results) ? raw.results : [],

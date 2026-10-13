@@ -69,14 +69,33 @@ try {
   );
 
   await page.goto(`${base}/artifacts`, { waitUntil: "networkidle" });
-  const field = page.getByTestId("artifact-file-autonomy-node");
-  await field.fill("autonomy-node_9.9.9_amd64.deb");
+  const webGround = await page.getByTestId("artifact-file-web-ground-control").inputValue();
+  const planner = await page.getByTestId("artifact-file-mission-planner").inputValue();
+  const simulator = await page.getByTestId("artifact-file-tective-simulator").inputValue();
+  assert(
+    webGround === "web-ground-control_0.0.1-b9c924f.deb",
+    `Expected web-ground-control filename, got ${webGround}`,
+  );
+  assert(
+    planner === "mission-planner_1.0.0+b9c924f-b29_amd64.deb",
+    `Expected mission-planner filename, got ${planner}`,
+  );
+  assert(
+    simulator === "tective-simulator_0.1.0+b9c924f.b29_amd64.deb",
+    `Expected tective-simulator filename, got ${simulator}`,
+  );
+  assert(
+    (await page.getByTestId("artifact-file-autonomy-node").count()) === 0,
+    "Old autonomy-node artifact is still listed",
+  );
+  const field = page.getByTestId("artifact-file-web-ground-control");
+  await field.fill("web-ground-control_9.9.9.deb");
   await page.getByTestId("save-artifacts").click();
   await page.waitForTimeout(400);
   await page.reload({ waitUntil: "networkidle" });
-  const saved = await page.getByTestId("artifact-file-autonomy-node").inputValue();
-  assert(saved === "autonomy-node_9.9.9_amd64.deb", `Artifact did not persist, got ${saved}`);
-  await field.fill("autonomy-node_1.0.0+12a9d76-b2_amd64.deb");
+  const saved = await page.getByTestId("artifact-file-web-ground-control").inputValue();
+  assert(saved === "web-ground-control_9.9.9.deb", `Artifact did not persist, got ${saved}`);
+  await field.fill("web-ground-control_0.0.1-b9c924f.deb");
   await page.getByTestId("save-artifacts").click();
   await page.waitForTimeout(300);
 

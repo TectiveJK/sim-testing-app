@@ -24,8 +24,8 @@ export default function ArtifactsPage() {
         <CardHeader>
           <CardTitle>Editable package list</CardTitle>
           <CardDescription>
-            Change either the package name or the full filename after each successful build. Add extra
-            fields if more services join the release.
+            Track only these three packages: web-ground-control, mission-planner, and tective-simulator.
+            Change the filename after each successful build.
           </CardDescription>
         </CardHeader>
         <CardContent>
