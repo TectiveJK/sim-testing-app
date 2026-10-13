@@ -87,9 +87,9 @@ Emergency flight (EFL):
 17. EFL loiter
 18. EFL back to mission
 
-Geofence:
+No fly zone:
 
-19. Geofence violation — create a corridor, put a geofence between the corridor and the hive, then after take-off use **Go to** in front of the corridor. The drone should reach the Go to point by going around the geofence.
+19. No fly zone violation — create a corridor, put a no fly zone between the corridor and the hive, then after take-off use **Go to** in front of the corridor. The drone should reach the Go to point by going around the no fly zone.
 
 Missions 1-4 and 19 are single flights. Missions 5-8 stop the flight, then continue; other phases need a new flight if you want to check them. Missions 11-18 try several commands from one state: use a new flight for each command.
 
@@ -108,11 +108,11 @@ Short names used in SkyCommand:
 
 **Expected result:** When drone 1 goes to the viewpoint task, another drone takes its position (swap) to do the task and drone 1 goes back to the hive.
 
-### Geofence violation
+### No fly zone violation
 
-**Procedure (do this in SkyCommand):** Create a corridor mission and between the corridor and the hive add a geofence location. Save the mission and start it. After arming the drone and it takes off, right-click in front of the corridor area and engage the **Go to** command. See if the drone violates the geofence location and, if it does, what it is doing after.
+**Procedure (do this in SkyCommand):** Create a corridor mission and between the corridor and the hive add a no fly zone location. Save the mission and start it. After arming the drone and it takes off, right-click in front of the corridor area and engage the **Go to** command. See if the drone violates the no fly zone location and, if it does, what it is doing after.
 
-**Expected result:** After the Go to command the drone reaches the Go to point going around the geofence location.
+**Expected result:** After the Go to command the drone reaches the Go to point going around the no fly zone location.
 
 Whenever SkyCommand / SIM software or drone software is updated, the tester creates a new test run from this suite and records whether previously verified behaviour still works.
 
@@ -141,7 +141,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Standalone checklist: this app does not control or talk to SkyCommand
 - Read the procedure here, fly the test in SkyCommand, then record **PASS** / **FAIL** / **BLOCKED** / **NOT TESTED** plus Notes / Observations
 - **Next test** after each result
-- 19 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, and geofence)
+- 19 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, and no fly zone)
 - Mission walkthroughs with step-by-step instructions and one score per mission
 - Test runs that store optional software-version labels and `.deb` artifact names
 - History and side-by-side run comparison for regressions

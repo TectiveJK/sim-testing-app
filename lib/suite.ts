@@ -19,7 +19,7 @@ export const CATEGORY_ORDER = [
   "Ground / hold",
   "Land In Place (LIP)",
   "Emergency flight (EFL)",
-  "Geofence",
+  "No fly zone",
 ];
 
 export const SUITE: SuiteMission[] = [
@@ -402,20 +402,20 @@ export const SUITE: SuiteMission[] = [
     ],
   },
   {
-    id: "geofence-violation",
-    name: "Geofence violation",
-    category: "Geofence",
+    id: "no-fly-zone-violation",
+    name: "No fly zone violation",
+    category: "No fly zone",
     description:
-      "Create a corridor mission with a geofence between the corridor and the hive, then after take-off send a Go to in front of the corridor and check that the drone goes around the geofence.",
+      "Create a corridor mission with a no fly zone between the corridor and the hive, then after take-off send a Go to in front of the corridor and check that the drone goes around the no fly zone.",
     expectedBehavior:
-      "After the Go to command the drone reaches the Go to point going around the geofence location.",
+      "After the Go to command the drone reaches the Go to point going around the no fly zone location.",
     procedure:
-      "In SkyCommand, create a corridor mission and between the corridor and the hive add a geofence location. Save the mission and start it. After arming the drone and it takes off, right-click in front of the corridor area and engage the Go to command. See if the drone violates the geofence location and, if it does, what it is doing after. Come back here and record one PASS or FAIL.",
+      "In SkyCommand, create a corridor mission and between the corridor and the hive add a no fly zone location. Save the mission and start it. After arming the drone and it takes off, right-click in front of the corridor area and engage the Go to command. See if the drone violates the no fly zone location and, if it does, what it is doing after. Come back here and record one PASS or FAIL.",
     steps: [
       {
-        label: "Corridor and geofence",
+        label: "Corridor and no fly zone",
         instruction:
-          "Create a corridor mission. Between the corridor and the hive, add a geofence location.",
+          "Create a corridor mission. Between the corridor and the hive, add a no fly zone location.",
       },
       {
         label: "Save and start",
@@ -427,9 +427,9 @@ export const SUITE: SuiteMission[] = [
           "Right-click in front of the corridor area and engage the Go to command.",
       },
       {
-        label: "Watch the geofence",
+        label: "Watch the no fly zone",
         instruction:
-          "See if the drone violates the geofence location and, if it does, what it is doing after. It should reach the Go to point by going around the geofence.",
+          "See if the drone violates the no fly zone location and, if it does, what it is doing after. It should reach the Go to point by going around the no fly zone.",
       },
     ],
   },

@@ -50,18 +50,22 @@ try {
   const secondTitle = await page.getByTestId("catalog-detail-title").innerText();
   assert(firstTitle !== secondTitle, `Catalog list did not change detail (${firstTitle} -> ${secondTitle})`);
   assert(secondTitle.includes("RTL"), `Expected RTL mission, got ${secondTitle}`);
-  await page.getByTestId("catalog-test-geofence-violation").click();
-  await page.waitForURL(/test=geofence-violation/);
-  const geofenceTitle = await page.getByTestId("catalog-detail-title").innerText();
-  assert(geofenceTitle.includes("Geofence violation"), `Expected Geofence violation, got ${geofenceTitle}`);
-  const geofenceBody = await page.locator("main").innerText();
+  await page.getByTestId("catalog-test-no-fly-zone-violation").click();
+  await page.waitForURL(/test=no-fly-zone-violation/);
+  const noFlyTitle = await page.getByTestId("catalog-detail-title").innerText();
+  assert(noFlyTitle.includes("No fly zone violation"), `Expected No fly zone violation, got ${noFlyTitle}`);
+  const noFlyBody = await page.locator("main").innerText();
   assert(
-    geofenceBody.includes("Go to"),
-    "Geofence violation procedure is missing the Go to command",
+    noFlyBody.includes("Go to"),
+    "No fly zone violation procedure is missing the Go to command",
   );
   assert(
-    geofenceBody.includes("going around the geofence"),
-    "Geofence violation expected result is missing",
+    noFlyBody.includes("going around the no fly zone"),
+    "No fly zone violation expected result is missing",
+  );
+  assert(
+    !noFlyBody.toLowerCase().includes("geofence"),
+    "Catalog still says geofence instead of no fly zone",
   );
 
   await page.goto(`${base}/artifacts`, { waitUntil: "networkidle" });
