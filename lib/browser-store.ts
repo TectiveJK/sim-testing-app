@@ -9,7 +9,14 @@ export function loadBrowserStore(): AppStore {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return emptyStore();
-    return normalizeStore(JSON.parse(raw) as Partial<AppStore>);
+    const rewritten = raw
+      .replaceAll("geofence-violation", "no-fly-zone-violation")
+      .replaceAll("Geofence violation", "No fly zone violation")
+      .replaceAll("Geofence", "No fly zone")
+      .replaceAll("geofence", "no fly zone");
+    const store = normalizeStore(JSON.parse(rewritten) as Partial<AppStore>);
+    if (rewritten !== raw) saveBrowserStore(store);
+    return store;
   } catch {
     return emptyStore();
   }

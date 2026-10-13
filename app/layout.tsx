@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   title: "SIM Flight Testing",
   description:
     "Checklist and result-recording app for SIM flight tests. SkyCommand stays separate.",
+  other: {
+    "cache-control": "no-store",
+    "app-catalog": "no-fly-zone-v2",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

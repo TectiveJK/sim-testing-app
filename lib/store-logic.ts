@@ -13,6 +13,48 @@ export function emptyStore(): AppStore {
   };
 }
 
+function rewriteGeofenceCopy(value: string) {
+  return value
+    .replaceAll("geofence-violation", "no-fly-zone-violation")
+    .replaceAll("Geofence violation", "No fly zone violation")
+    .replaceAll("Geofence", "No fly zone")
+    .replaceAll("geofence", "no fly zone");
+}
+
+function rewriteStoredGeofence(store: AppStore) {
+  store.customTests = store.customTests
+    .map((test) => ({
+      ...test,
+      id: rewriteGeofenceCopy(test.id),
+      currentState: rewriteGeofenceCopy(test.currentState),
+      phase: rewriteGeofenceCopy(test.phase),
+      command: rewriteGeofenceCopy(test.command),
+      name: rewriteGeofenceCopy(test.name),
+      description: rewriteGeofenceCopy(test.description),
+      expectedBehavior: rewriteGeofenceCopy(test.expectedBehavior),
+      procedure: rewriteGeofenceCopy(test.procedure),
+    }))
+    .filter((test, index, list) => {
+      if (test.id === "no-fly-zone-violation") return false;
+      return list.findIndex((item) => item.id === test.id) === index;
+    });
+
+  for (const result of store.results) {
+    result.testCaseId = rewriteGeofenceCopy(result.testCaseId);
+    result.notes = rewriteGeofenceCopy(result.notes);
+  }
+
+  const rank = (status: string) => (status === "not_tested" ? 0 : 1);
+  store.results.sort((a, b) => rank(b.status) - rank(a.status));
+  const seen = new Set<string>();
+  store.results = store.results.filter((result) => {
+    const key = `${result.testRunId}::${result.testCaseId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export function normalizeStore(raw: Partial<AppStore> | null): AppStore {
   const base = emptyStore();
   if (!raw) return base;
@@ -23,6 +65,7 @@ export function normalizeStore(raw: Partial<AppStore> | null): AppStore {
     results: Array.isArray(raw.results) ? raw.results : [],
     customTests: Array.isArray(raw.customTests) ? raw.customTests : [],
   };
+  rewriteStoredGeofence(store);
   const tests = mergeCatalog(store.customTests);
   for (const run of store.runs) {
     const have = new Set(
