@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "Checklist and result-recording app for SIM flight tests. SkyCommand stays separate.",
   other: {
     "cache-control": "no-store",
-    "app-catalog": "no-fly-zone-v2",
+    "app-catalog": "look-at-v1",
   },
 };
 

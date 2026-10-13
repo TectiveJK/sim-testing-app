@@ -118,23 +118,34 @@ function CatalogInner() {
               <CardHeader>
                 <CardTitle>Missions</CardTitle>
               </CardHeader>
-              <CardContent className="max-h-[70vh] space-y-1 overflow-auto">
+              <CardContent className="space-y-4">
                 {filtered.length === 0 ? (
                   <p className="text-sm text-muted-foreground">No tests match these filters.</p>
                 ) : (
-                  filtered.map((test) => (
-                    <Link
-                      key={test.id}
-                      href={queryHref(pathname, searchParams, { view: "list", test: test.id })}
-                      data-testid={`catalog-test-${test.id}`}
-                      className={`block w-full rounded-lg border px-3 py-2 text-left text-sm hover:bg-muted ${
-                        selected?.id === test.id ? "border-primary bg-muted" : "border-transparent"
-                      }`}
-                    >
-                      <div className="font-medium">{test.name}</div>
-                      <div className="font-mono text-xs text-muted-foreground">{test.id}</div>
-                    </Link>
-                  ))
+                  catalog.states
+                    .filter((category) => filtered.some((test) => test.currentState === category))
+                    .map((category) => (
+                      <div key={category} className="space-y-1">
+                        <div className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          {category}
+                        </div>
+                        {filtered
+                          .filter((test) => test.currentState === category)
+                          .map((test) => (
+                            <Link
+                              key={test.id}
+                              href={queryHref(pathname, searchParams, { view: "list", test: test.id })}
+                              data-testid={`catalog-test-${test.id}`}
+                              className={`block w-full rounded-lg border px-3 py-2 text-left text-sm hover:bg-muted ${
+                                selected?.id === test.id ? "border-primary bg-muted" : "border-transparent"
+                              }`}
+                            >
+                              <div className="font-medium">{test.name}</div>
+                              <div className="font-mono text-xs text-muted-foreground">{test.id}</div>
+                            </Link>
+                          ))}
+                      </div>
+                    ))
                 )}
               </CardContent>
             </Card>
