@@ -56,7 +56,7 @@ function CatalogInner() {
       <PageHeader
         eyebrow="Catalog"
         title="Condensed mission suite"
-        description="The catalog is 18 missions. Read the procedure here, fly it in SkyCommand, then score the mission in a test run."
+        description="The catalog is 19 missions. Read the procedure here, fly it in SkyCommand, then score the mission in a test run."
         actions={
           <Button onClick={() => setOpen(true)}>Add test</Button>
         }

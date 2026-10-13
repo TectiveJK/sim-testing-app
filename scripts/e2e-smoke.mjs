@@ -50,6 +50,19 @@ try {
   const secondTitle = await page.getByTestId("catalog-detail-title").innerText();
   assert(firstTitle !== secondTitle, `Catalog list did not change detail (${firstTitle} -> ${secondTitle})`);
   assert(secondTitle.includes("RTL"), `Expected RTL mission, got ${secondTitle}`);
+  await page.getByTestId("catalog-test-geofence-violation").click();
+  await page.waitForURL(/test=geofence-violation/);
+  const geofenceTitle = await page.getByTestId("catalog-detail-title").innerText();
+  assert(geofenceTitle.includes("Geofence violation"), `Expected Geofence violation, got ${geofenceTitle}`);
+  const geofenceBody = await page.locator("main").innerText();
+  assert(
+    geofenceBody.includes("Go to"),
+    "Geofence violation procedure is missing the Go to command",
+  );
+  assert(
+    geofenceBody.includes("going around the geofence"),
+    "Geofence violation expected result is missing",
+  );
 
   await page.goto(`${base}/artifacts`, { waitUntil: "networkidle" });
   const field = page.getByTestId("artifact-file-autonomy-node");

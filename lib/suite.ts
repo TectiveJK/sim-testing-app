@@ -19,6 +19,7 @@ export const CATEGORY_ORDER = [
   "Ground / hold",
   "Land In Place (LIP)",
   "Emergency flight (EFL)",
+  "Geofence",
 ];
 
 export const SUITE: SuiteMission[] = [
@@ -400,6 +401,38 @@ export const SUITE: SuiteMission[] = [
       },
     ],
   },
+  {
+    id: "geofence-violation",
+    name: "Geofence violation",
+    category: "Geofence",
+    description:
+      "Create a corridor mission with a geofence between the corridor and the hive, then after take-off send a Go to in front of the corridor and check that the drone goes around the geofence.",
+    expectedBehavior:
+      "After the Go to command the drone reaches the Go to point going around the geofence location.",
+    procedure:
+      "In SkyCommand, create a corridor mission and between the corridor and the hive add a geofence location. Save the mission and start it. After arming the drone and it takes off, right-click in front of the corridor area and engage the Go to command. See if the drone violates the geofence location and, if it does, what it is doing after. Come back here and record one PASS or FAIL.",
+    steps: [
+      {
+        label: "Corridor and geofence",
+        instruction:
+          "Create a corridor mission. Between the corridor and the hive, add a geofence location.",
+      },
+      {
+        label: "Save and start",
+        instruction: "Save the mission and start it. Arm the drone and wait until it takes off.",
+      },
+      {
+        label: "Go to",
+        instruction:
+          "Right-click in front of the corridor area and engage the Go to command.",
+      },
+      {
+        label: "Watch the geofence",
+        instruction:
+          "See if the drone violates the geofence location and, if it does, what it is doing after. It should reach the Go to point by going around the geofence.",
+      },
+    ],
+  },
 ];
 
 {
@@ -407,7 +440,7 @@ export const SUITE: SuiteMission[] = [
   if (new Set(ids).size !== ids.length) {
     throw new Error("Duplicate suite mission ids");
   }
-  if (ids.length !== 18) {
-    throw new Error(`Expected 18 missions, got ${ids.length}`);
+  if (ids.length !== 19) {
+    throw new Error(`Expected 19 missions, got ${ids.length}`);
   }
 }

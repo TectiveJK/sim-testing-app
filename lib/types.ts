@@ -18,6 +18,7 @@ export const COMMANDS = [
   "Land",
   "Return to Hive",
   "RTL",
+  "Go to",
 ] as const;
 
 export type Command = (typeof COMMANDS)[number];
