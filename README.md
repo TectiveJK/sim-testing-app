@@ -149,7 +149,7 @@ New flight commands, drone functions, mission types, and SIM procedures can be a
 - Standalone checklist: this app does not control or talk to SkyCommand
 - Read the procedure here, fly the test in SkyCommand, then record **PASS** / **FAIL** / **BLOCKED** / **NOT TESTED** plus Notes / Observations
 - **Next test** after each result
-- 20 condensed missions (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, no fly zone, and Look at)
+- 20 condensed missions, grouped by category on the catalog page (hive-to-hive corridor, viewpoint returns, in-flight interrupts, LIP, EFL, no fly zone, and Look at)
 - Mission walkthroughs with step-by-step instructions and one score per mission
 - Test runs that store optional software-version labels and the three last successful `.deb` artifact names
 - History and side-by-side run comparison for regressions
@@ -207,7 +207,7 @@ Each run copies the current catalog so the tester records the same suite against
 - **Delete** is next to Export PDF on the Test runs list and on the run page. Use it to remove a run you did not do.
 - CSV and JSON exports stay available on the run page for spreadsheet or archive use.
 
-The catalog lists the 20 missions. Scoring happens only inside a test run.
+The catalog lists the 20 missions, grouped by category. **Look At Command** is under **Look at** at the bottom of the list. Scoring happens only inside a test run.
 
 ## Adding tests later
 
